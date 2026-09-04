@@ -9,6 +9,7 @@
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #0f172a;
+      --muted: #64748b;
       --border: #cbd5e1;
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
@@ -20,18 +21,29 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
+      max-width: 1440px;
+      margin: 32px auto;
+      padding: 0 24px;
       line-height: 1.5;
     }
     h1 {
       margin-bottom: 8px;
     }
     .subtitle {
-      color: #64748b;
+      color: var(--muted);
       margin-top: 0;
       margin-bottom: 24px;
+    }
+    .layout-container {
+      display: grid;
+      grid-template-columns: minmax(380px, 1fr) minmax(500px, 1.3fr);
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .layout-container {
+        grid-template-columns: 1fr;
+      }
     }
     .card {
       background: var(--card-bg);
@@ -74,21 +86,35 @@
     }
     .actions {
       display: flex;
+      flex-wrap: wrap;
       gap: 12px;
     }
     button {
       background-color: var(--primary);
       color: white;
-      border: none;
+      border: 1px solid transparent;
       padding: 10px 20px;
       border-radius: 6px;
       font-size: 15px;
       font-weight: 500;
       cursor: pointer;
-      transition: background-color 0.15s ease-in-out;
+      transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
     }
     button:hover {
       background-color: var(--primary-hover);
+    }
+    button.btn-secondary {
+      background-color: #ffffff;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    button.btn-secondary:hover {
+      background-color: #f1f5f9;
+      border-color: #94a3b8;
+    }
+    button.btn-sm {
+      padding: 6px 14px;
+      font-size: 13px;
     }
     button:disabled {
       opacity: 0.6;
@@ -107,42 +133,113 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 13px;
     }
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 140px);
+      min-height: 720px;
+      padding: 0;
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+    }
+    .panel-header h2 {
+      font-size: 15px;
+      margin: 0;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .preview-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: #e2e8f0;
+    }
+    .preview-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      color: var(--muted);
+      text-align: center;
+      padding: 32px;
+      background: var(--card-bg);
+    }
+    .preview-placeholder svg {
+      width: 48px;
+      height: 48px;
+      stroke: #94a3b8;
+      margin-bottom: 12px;
+    }
+    .preview-frame {
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      border: none;
+    }
   </style>
 </head>
 <body>
   <h1>Instead</h1>
   <p class="subtitle">Government form renderer with transparent overlay & debug boundaries</p>
 
-  <div class="card">
-    <div class="form-group">
-      <label for="form-select">Form</label>
-      <select id="form-select" name="form">
-        {% for f in forms %}
-        <option value="{{ f }}">{{ f }}</option>
-        {% endfor %}
-      </select>
+  <div class="layout-container">
+    <div class="card left-panel">
+      <div class="form-group">
+        <label for="form-select">Form</label>
+        <select id="form-select" name="form">
+          {% for f in forms %}
+          <option value="{{ f }}">{{ f }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="file-upload">Upload Dataset (JSON)</label>
+        <input type="file" id="file-upload" accept=".json,application/json">
+      </div>
+
+      <div class="form-group">
+        <label for="dataset-input">Dataset JSON</label>
+        <textarea id="dataset-input" name="dataset" rows="14" placeholder='{"taxpayer": {"firstName": "Ada", ...}}'></textarea>
+      </div>
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="debug-check" name="debug">
+        <label for="debug-check">Render red debug bounding boxes and annotation IDs</label>
+      </div>
+
+      <div class="actions">
+        <button type="button" id="preview-btn">Preview PDF</button>
+        <button type="button" id="download-btn" class="btn-secondary">Render &amp; Download PDF</button>
+      </div>
+
+      <pre id="error-box"></pre>
     </div>
 
-    <div class="form-group">
-      <label for="file-upload">Upload Dataset (JSON)</label>
-      <input type="file" id="file-upload" accept=".json,application/json">
+    <div class="card right-panel">
+      <div class="panel-header">
+        <h2>PDF Preview</h2>
+        <button type="button" id="preview-download-btn" class="btn-secondary btn-sm" style="display: none;">Download PDF</button>
+      </div>
+      <div class="preview-body">
+        <div id="preview-placeholder" class="preview-placeholder">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+          </svg>
+          <p>Click <strong>Preview PDF</strong> to view the rendered form here.</p>
+        </div>
+        <iframe id="preview-frame" class="preview-frame" style="display: none;" title="PDF Preview"></iframe>
+      </div>
     </div>
-
-    <div class="form-group">
-      <label for="dataset-input">Dataset JSON</label>
-      <textarea id="dataset-input" name="dataset" rows="14" placeholder='{"taxpayer": {"firstName": "Ada", ...}}'></textarea>
-    </div>
-
-    <div class="checkbox-group">
-      <input type="checkbox" id="debug-check" name="debug">
-      <label for="debug-check">Render red debug bounding boxes and annotation IDs</label>
-    </div>
-
-    <div class="actions">
-      <button type="button" id="render-btn">Render &amp; Download PDF</button>
-    </div>
-
-    <pre id="error-box"></pre>
   </div>
 
   <script>
@@ -150,8 +247,15 @@
     const fileUpload = document.getElementById("file-upload");
     const datasetInput = document.getElementById("dataset-input");
     const debugCheck = document.getElementById("debug-check");
-    const renderBtn = document.getElementById("render-btn");
+    const previewBtn = document.getElementById("preview-btn");
+    const downloadBtn = document.getElementById("download-btn");
+    const previewDownloadBtn = document.getElementById("preview-download-btn");
+    const previewPlaceholder = document.getElementById("preview-placeholder");
+    const previewFrame = document.getElementById("preview-frame");
     const errorBox = document.getElementById("error-box");
+
+    let currentPreviewUrl = null;
+    let currentPreviewFilename = "form-filled.pdf";
 
     fileUpload.addEventListener("change", (e) => {
       const file = e.target.files[0];
@@ -163,7 +267,7 @@
       reader.readAsText(file);
     });
 
-    renderBtn.addEventListener("click", async () => {
+    async function executeRender(action) {
       errorBox.style.display = "none";
       errorBox.textContent = "";
 
@@ -179,8 +283,13 @@
         }
       }
 
-      renderBtn.disabled = true;
-      renderBtn.textContent = "Rendering...";
+      const isPreview = action === "preview";
+      const activeBtn = isPreview ? previewBtn : downloadBtn;
+      const originalText = activeBtn.textContent;
+
+      previewBtn.disabled = true;
+      downloadBtn.disabled = true;
+      activeBtn.textContent = "Rendering...";
 
       try {
         const response = await fetch("/api/render", {
@@ -201,22 +310,51 @@
           errorBox.style.display = "block";
         } else {
           const blob = await response.blob();
-          const downloadUrl = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = downloadUrl;
-          a.download = `${formSelect.value}-filled.pdf`;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          URL.revokeObjectURL(downloadUrl);
+          const pdfBlob = new Blob([blob], { type: "application/pdf" });
+          const filename = `${formSelect.value}-filled.pdf`;
+
+          if (isPreview) {
+            if (currentPreviewUrl) {
+              URL.revokeObjectURL(currentPreviewUrl);
+            }
+            currentPreviewUrl = URL.createObjectURL(pdfBlob);
+            currentPreviewFilename = filename;
+            previewPlaceholder.style.display = "none";
+            previewFrame.style.display = "block";
+            previewFrame.src = currentPreviewUrl;
+            previewDownloadBtn.style.display = "inline-block";
+          } else {
+            const downloadUrl = URL.createObjectURL(pdfBlob);
+            const a = document.createElement("a");
+            a.href = downloadUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(downloadUrl);
+          }
         }
       } catch (err) {
         errorBox.textContent = "Request failed: " + err.message;
         errorBox.style.display = "block";
       } finally {
-        renderBtn.disabled = false;
-        renderBtn.textContent = "Render & Download PDF";
+        previewBtn.disabled = false;
+        downloadBtn.disabled = false;
+        activeBtn.textContent = originalText;
       }
+    }
+
+    previewBtn.addEventListener("click", () => executeRender("preview"));
+    downloadBtn.addEventListener("click", () => executeRender("download"));
+
+    previewDownloadBtn.addEventListener("click", () => {
+      if (!currentPreviewUrl) return;
+      const a = document.createElement("a");
+      a.href = currentPreviewUrl;
+      a.download = currentPreviewFilename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
     });
   </script>
 </body>

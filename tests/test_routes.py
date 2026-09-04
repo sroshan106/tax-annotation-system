@@ -10,6 +10,13 @@ def test_index_lists_the_available_forms(client):
     r = client.get("/")
     assert r.status_code == 200 and b"f1040" in r.data
 
+def test_index_has_two_column_layout_and_preview_controls(client):
+    r = client.get("/")
+    assert r.status_code == 200
+    assert b'id="preview-btn"' in r.data
+    assert b'id="download-btn"' in r.data
+    assert b'id="preview-frame"' in r.data
+
 def test_render_returns_a_pdf(client):
     data = json.loads(open("examples/simple-w2.json").read())
     r = client.post("/api/render", json={"form": "f1040", "data": data})
