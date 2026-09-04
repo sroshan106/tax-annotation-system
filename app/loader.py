@@ -7,7 +7,7 @@ from app.models import AnnotationSet
 class SourceMismatch(RuntimeError): ...
 
 
-def load_set(path: str | Path, *, strict: bool = False) -> AnnotationSet:
+def load_set(path: str | Path) -> AnnotationSet:
     return AnnotationSet.model_validate(json.loads(Path(path).read_text()))
 
 
