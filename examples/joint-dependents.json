@@ -1,0 +1,49 @@
+{
+  "taxYear": { "fiscalYearBegin": "2025-07-01", "fiscalYearEndYY": 26 },
+  "taxpayer": {
+    "firstName": "Bartholomew Alexander J",
+    "lastName": "Vandermeulen-Ashworth-Okonkwo",
+    "ssn": "301-77-4416",
+    "occupation": "Structural Engineer"
+  },
+  "spouse": {
+    "firstName": "Priyanka Anandavalli",
+    "lastName": "Vandermeulen-Ashworth-Okonkwo",
+    "ssn": "298-40-1173",
+    "occupation": "Pediatrician"
+  },
+  "address": {
+    "street": "8842 Northaven Ridge Parkway",
+    "city": "Chapel Hill",
+    "state": "NC",
+    "zip": "27516"
+  },
+  "filingStatus": "marriedFilingJointly",
+  "digitalAssets": true,
+  "dependents": [
+    { "firstName": "Rosalind", "lastName": "Vandermeulen-Ashworth-Okonkwo",
+      "ssn": "612-08-3391", "relationship": "Daughter" },
+    { "firstName": "Theodore", "lastName": "Vandermeulen-Ashworth-Okonkwo",
+      "ssn": "612-08-3392", "relationship": "Son" },
+    { "firstName": "Margarethe", "lastName": "Ashworth",
+      "ssn": "544-19-7725", "relationship": "Mother" }
+  ],
+  "dependentsContinuedOnStatement": false,
+  "income": {
+    "wages": { "dollars": 214905, "cents": "00" },
+    "totalWages": 214905,
+    "taxExemptInterest": 1240,
+    "taxableInterest": 3182.55,
+    "ordinaryDividends": 4770.12,
+    "capitalGainOrLoss": -3000,
+    "totalIncome": 219857.67
+  },
+  "adjustments": { "total": 7000 },
+  "adjustedGrossIncome": 212857.67,
+  "deductions": { "standard": 31500 },
+  "taxableIncome": 181357.67,
+  "tax": 30248,
+  "totalTax": 30248,
+  "payments": { "withheldFromW2": 28115.4, "total": 28115.4 },
+  "refund": { "overpaid": 0, "refundedToYou": 0 }
+}

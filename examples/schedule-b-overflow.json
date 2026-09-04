@@ -1,0 +1,30 @@
+{
+  "taxpayer": {
+    "nameShownOnReturn": "Bartholomew A. and Priyanka A. Vandermeulen-Ashworth-Okonkwo",
+    "ssn": "301-77-4416"
+  },
+  "interest": {
+    "statementNote": "See attached statement for the remaining payers",
+    "payers": [
+      { "name": "First Cedar Valley Savings Bank", "amount": 412.18 },
+      { "name": "Northaven Credit Union", "amount": 1180.44 },
+      { "name": "Meridian Brokerage LLC", "amount": 2295.07 },
+      { "name": "Blue Ridge Community Bank", "amount": 88.5 },
+      { "name": "Tarheel Federal Savings", "amount": 640.19 },
+      { "name": "Piedmont Trust Company", "amount": 1503.66 },
+      { "name": "Harborline Municipal Fund", "amount": 274.9 },
+      { "name": "Great Lakes Deposit Bank", "amount": 957.32 },
+      { "name": "Summit Ridge Bancorp", "amount": 331.75 },
+      { "name": "Coastal Carolina Savings", "amount": 1622.4 },
+      { "name": "Ironwood Investment Partners", "amount": 745.11 },
+      { "name": "Old Dominion Interest Fund", "amount": 205.63 },
+      { "name": "Sandhill Mortgage Note (seller-financed, J. Reyes 400-22-8871)", "amount": 3840.0 },
+      { "name": "Keystone Municipal Bank", "amount": 118.27 },
+      { "name": "Willow Creek Savings and Loan", "amount": 522.84 },
+      { "name": "Beacon Hill Treasury Fund", "amount": 1094.55 }
+    ],
+    "totalInterest": 17833.01,
+    "excludableSavingsBondInterest": 1200,
+    "taxableInterest": 16633.01
+  }
+}

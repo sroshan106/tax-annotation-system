@@ -1,0 +1,200 @@
+{
+  "specVersion": "1.0",
+  "form": {
+    "id": "f1040sb",
+    "title": "Schedule B (Form 1040) Interest and Ordinary Dividends",
+    "taxYear": 2024,
+    "revision": "2024",
+    "jurisdiction": "US-IRS"
+  },
+  "source": {
+    "url": "https://www.irs.gov/pub/irs-pdf/f1040sb.pdf",
+    "sha256": "dd1ec3719954532bd219343d81385a2ada3c8e9573fc755a3893f1fbbecc63e2",
+    "pageCount": 1
+  },
+  "pages": [
+    {
+      "number": 1,
+      "width": 612.0,
+      "height": 792.0
+    }
+  ],
+  "defaults": {
+    "font": "Helvetica",
+    "size": 9.0,
+    "color": "#000000",
+    "align": "left",
+    "valign": "middle",
+    "padding": 1.5
+  },
+  "annotations": [
+    {
+      "kind": "field",
+      "id": "sb_name_shown_on_return",
+      "label": "Name(s) shown on return",
+      "page": 1,
+      "box": {
+        "x": 36.0,
+        "y": 94.0,
+        "width": 431.25,
+        "height": 14.0
+      },
+      "type": "text",
+      "value": "$.taxpayer.nameShownOnReturn",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_01[0]",
+      "overflow": "shrink",
+      "minSize": 6.0
+    },
+    {
+      "kind": "field",
+      "id": "sb_ssn",
+      "label": "Your social security number",
+      "page": 1,
+      "box": {
+        "x": 468.0,
+        "y": 94.0,
+        "width": 108.0,
+        "height": 14.0
+      },
+      "type": "ssn",
+      "value": "$.taxpayer.ssn",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_02[0]",
+      "required": true,
+      "format": {
+        "cells": 9
+      },
+      "style": {
+        "font": "Courier",
+        "size": 8.0
+      }
+    },
+    {
+      "kind": "group",
+      "id": "part1_interest_payers",
+      "label": "Part I, line 1: list name of payer",
+      "page": 1,
+      "source": "$.interest.payers[*]",
+      "rowHeight": 12.0,
+      "maxRows": 13,
+      "firstRowBox": {
+        "x": 129.6,
+        "y": 144.0,
+        "width": 446.4,
+        "height": 12.0
+      },
+      "overflowStrategy": "statement",
+      "overflowTarget": "sb_part1_statement_note",
+      "columns": [
+        {
+          "kind": "field",
+          "id": "payer_name",
+          "label": "Payer name",
+          "page": 1,
+          "box": {
+            "x": 129.6,
+            "y": 144.0,
+            "width": 331.2,
+            "height": 12.0
+          },
+          "type": "text",
+          "value": "$.name",
+          "acroFieldName": "topmostSubform[0].Page1[0].Line1_ReadOrder[0].f1_03[0]",
+          "overflow": "shrink",
+          "minSize": 6.0
+        },
+        {
+          "kind": "field",
+          "id": "payer_amount",
+          "label": "Interest amount",
+          "page": 1,
+          "box": {
+            "x": 489.6,
+            "y": 144.0,
+            "width": 86.4,
+            "height": 12.0
+          },
+          "type": "currency",
+          "value": "$.amount",
+          "acroFieldName": "topmostSubform[0].Page1[0].f1_04[0]",
+          "style": {
+            "align": "right"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "field",
+      "id": "sb_part1_statement_note",
+      "label": "Part I overflow: see attached statement",
+      "page": 1,
+      "box": {
+        "x": 129.6,
+        "y": 300.0,
+        "width": 331.2,
+        "height": 12.0
+      },
+      "type": "text",
+      "value": "$.interest.statementNote",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_29[0]",
+      "overflow": "shrink",
+      "minSize": 6.0,
+      "style": {
+        "font": "Helvetica-Oblique"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "sb_line_2_total_interest",
+      "label": "2 Add the amounts on line 1",
+      "page": 1,
+      "box": {
+        "x": 489.6,
+        "y": 312.0,
+        "width": 86.4,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.interest.totalInterest",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_31[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "sb_line_3_excludable_savings_bond_interest",
+      "label": "3 Excludable interest on series EE and I U.S. savings bonds",
+      "page": 1,
+      "box": {
+        "x": 489.6,
+        "y": 336.0,
+        "width": 86.4,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.interest.excludableSavingsBondInterest",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_32[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "sb_line_4_taxable_interest",
+      "label": "4 Subtract line 3 from line 2",
+      "page": 1,
+      "box": {
+        "x": 489.6,
+        "y": 348.0,
+        "width": 86.4,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.interest.taxableInterest",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_33[0]",
+      "style": {
+        "align": "right"
+      }
+    }
+  ]
+}

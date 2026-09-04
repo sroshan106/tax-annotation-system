@@ -1,0 +1,34 @@
+{
+  "taxpayer": {
+    "firstName": "Dana R",
+    "lastName": "Whitfield",
+    "ssn": "412-55-8290",
+    "occupation": "Registered Nurse"
+  },
+  "address": {
+    "street": "1147 Sycamore Lane",
+    "city": "Cedar Rapids",
+    "state": "IA",
+    "zip": "52402"
+  },
+  "filingStatus": "single",
+  "digitalAssets": false,
+  "dependents": [],
+  "dependentsContinuedOnStatement": false,
+  "income": {
+    "wages": { "dollars": 62480, "cents": "37" },
+    "totalWages": 62480.37,
+    "taxExemptInterest": 0,
+    "taxableInterest": 0,
+    "ordinaryDividends": 0,
+    "totalIncome": 62480.37
+  },
+  "adjustments": { "total": 0 },
+  "adjustedGrossIncome": 62480.37,
+  "deductions": { "standard": 15750 },
+  "taxableIncome": 46730.37,
+  "tax": 5312,
+  "totalTax": 5312,
+  "payments": { "withheldFromW2": 6104.18, "total": 6104.18 },
+  "refund": { "overpaid": 792.18, "refundedToYou": 792.18 }
+}

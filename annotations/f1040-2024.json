@@ -1,0 +1,942 @@
+{
+  "specVersion": "1.0",
+  "form": {
+    "id": "f1040",
+    "title": "Form 1040 U.S. Individual Income Tax Return",
+    "taxYear": 2024,
+    "revision": "2024",
+    "jurisdiction": "US-IRS"
+  },
+  "source": {
+    "url": "https://www.irs.gov/pub/irs-pdf/f1040.pdf",
+    "sha256": "3d31c226df0d189ced80e039d01cf0f8820c1019681a0f0ca6264de277b7e982",
+    "pageCount": 2
+  },
+  "pages": [
+    {
+      "number": 1,
+      "width": 612.0,
+      "height": 792.0
+    },
+    {
+      "number": 2,
+      "width": 612.0,
+      "height": 792.0
+    }
+  ],
+  "defaults": {
+    "font": "Helvetica",
+    "size": 9.0,
+    "color": "#000000",
+    "align": "left",
+    "valign": "middle",
+    "padding": 1.5
+  },
+  "annotations": [
+    {
+      "kind": "field",
+      "id": "fiscal_year_begin_date",
+      "label": "Other tax year beginning",
+      "page": 1,
+      "box": {
+        "x": 228.8,
+        "y": 48.5,
+        "width": 88.0,
+        "height": 11.0
+      },
+      "type": "date",
+      "value": "$.taxYear.fiscalYearBegin",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_01[0]",
+      "format": {
+        "datePattern": "%m/%d/%Y"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "fiscal_year_end_yy",
+      "label": "Other tax year ending, 20__",
+      "page": 1,
+      "box": {
+        "x": 468.6,
+        "y": 48.5,
+        "width": 17.0,
+        "height": 11.0
+      },
+      "type": "integer",
+      "value": "$.taxYear.fiscalYearEndYY",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_03[0]",
+      "style": {
+        "align": "center"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "taxpayer_first_name",
+      "label": "Your first name and middle initial",
+      "page": 1,
+      "box": {
+        "x": 36.0,
+        "y": 94.0,
+        "width": 215.25,
+        "height": 14.0
+      },
+      "type": "text",
+      "value": "$.taxpayer.firstName",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_14[0]",
+      "overflow": "shrink",
+      "minSize": 6.0
+    },
+    {
+      "kind": "field",
+      "id": "taxpayer_last_name",
+      "label": "Last name",
+      "page": 1,
+      "box": {
+        "x": 253.0,
+        "y": 94.0,
+        "width": 214.25,
+        "height": 14.0
+      },
+      "type": "text",
+      "value": "$.taxpayer.lastName",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_15[0]",
+      "overflow": "shrink",
+      "minSize": 6.0
+    },
+    {
+      "kind": "field",
+      "id": "taxpayer_ssn",
+      "label": "Your social security number",
+      "page": 1,
+      "box": {
+        "x": 469.0,
+        "y": 94.0,
+        "width": 107.0,
+        "height": 14.0
+      },
+      "type": "ssn",
+      "value": "$.taxpayer.ssn",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_16[0]",
+      "required": true,
+      "format": {
+        "cells": 9
+      },
+      "style": {
+        "font": "Courier",
+        "size": 8.0
+      }
+    },
+    {
+      "kind": "field",
+      "id": "spouse_first_name",
+      "label": "Spouse's first name and middle initial",
+      "page": 1,
+      "box": {
+        "x": 36.0,
+        "y": 118.0,
+        "width": 215.25,
+        "height": 14.0
+      },
+      "type": "text",
+      "value": "$.spouse.firstName",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_17[0]",
+      "overflow": "shrink",
+      "minSize": 6.0
+    },
+    {
+      "kind": "field",
+      "id": "spouse_last_name",
+      "label": "Spouse's last name",
+      "page": 1,
+      "box": {
+        "x": 253.0,
+        "y": 118.0,
+        "width": 214.25,
+        "height": 14.0
+      },
+      "type": "text",
+      "value": "$.spouse.lastName",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_18[0]",
+      "overflow": "shrink",
+      "minSize": 6.0
+    },
+    {
+      "kind": "field",
+      "id": "spouse_ssn",
+      "label": "Spouse's social security number",
+      "page": 1,
+      "box": {
+        "x": 469.0,
+        "y": 118.0,
+        "width": 107.0,
+        "height": 14.0
+      },
+      "type": "ssn",
+      "value": "$.spouse.ssn",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_19[0]",
+      "format": {
+        "cells": 9
+      },
+      "style": {
+        "font": "Courier",
+        "size": 8.0
+      }
+    },
+    {
+      "kind": "field",
+      "id": "address_street",
+      "label": "Home address (number and street)",
+      "page": 1,
+      "box": {
+        "x": 36.0,
+        "y": 142.0,
+        "width": 380.85,
+        "height": 14.0
+      },
+      "type": "text",
+      "value": "$.address.street",
+      "acroFieldName": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_20[0]"
+    },
+    {
+      "kind": "field",
+      "id": "address_city",
+      "label": "City, town, or post office",
+      "page": 1,
+      "box": {
+        "x": 36.0,
+        "y": 166.0,
+        "width": 294.45,
+        "height": 14.0
+      },
+      "type": "text",
+      "value": "$.address.city",
+      "acroFieldName": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_22[0]"
+    },
+    {
+      "kind": "field",
+      "id": "address_state",
+      "label": "State",
+      "page": 1,
+      "box": {
+        "x": 332.2,
+        "y": 166.0,
+        "width": 63.05,
+        "height": 14.0
+      },
+      "type": "text",
+      "value": "$.address.state",
+      "acroFieldName": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_23[0]",
+      "style": {
+        "align": "center"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "address_zip",
+      "label": "ZIP code",
+      "page": 1,
+      "box": {
+        "x": 397.0,
+        "y": 166.0,
+        "width": 70.25,
+        "height": 14.0
+      },
+      "type": "zip",
+      "value": "$.address.zip",
+      "acroFieldName": "topmostSubform[0].Page1[0].Address_ReadOrder[0].f1_24[0]",
+      "format": {
+        "cells": 5
+      },
+      "style": {
+        "font": "Courier",
+        "size": 8.0
+      }
+    },
+    {
+      "kind": "field",
+      "id": "filing_status_single",
+      "label": "Filing status: Single",
+      "page": 1,
+      "box": {
+        "x": 97.6,
+        "y": 206.0,
+        "width": 8.0,
+        "height": 8.0
+      },
+      "type": "checkbox",
+      "value": "$.filingStatus",
+      "acroFieldName": "topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[0]",
+      "format": {
+        "trueValues": [
+          "single"
+        ]
+      },
+      "condition": {
+        "path": "$.filingStatus",
+        "op": "equals",
+        "value": "single"
+      },
+      "style": {
+        "align": "center",
+        "size": 8.0
+      }
+    },
+    {
+      "kind": "field",
+      "id": "filing_status_marriedFilingJointly",
+      "label": "Filing status: Married filing jointly",
+      "page": 1,
+      "box": {
+        "x": 97.6,
+        "y": 218.0,
+        "width": 8.0,
+        "height": 8.0
+      },
+      "type": "checkbox",
+      "value": "$.filingStatus",
+      "acroFieldName": "topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[1]",
+      "format": {
+        "trueValues": [
+          "marriedFilingJointly"
+        ]
+      },
+      "condition": {
+        "path": "$.filingStatus",
+        "op": "equals",
+        "value": "marriedFilingJointly"
+      },
+      "style": {
+        "align": "center",
+        "size": 8.0
+      }
+    },
+    {
+      "kind": "field",
+      "id": "filing_status_marriedFilingSeparately",
+      "label": "Filing status: Married filing separately (MFS)",
+      "page": 1,
+      "box": {
+        "x": 97.6,
+        "y": 230.0,
+        "width": 8.0,
+        "height": 8.0
+      },
+      "type": "checkbox",
+      "value": "$.filingStatus",
+      "acroFieldName": "topmostSubform[0].Page1[0].Checkbox_ReadOrder[0].c1_8[2]",
+      "format": {
+        "trueValues": [
+          "marriedFilingSeparately"
+        ]
+      },
+      "condition": {
+        "path": "$.filingStatus",
+        "op": "equals",
+        "value": "marriedFilingSeparately"
+      },
+      "style": {
+        "align": "center",
+        "size": 8.0
+      }
+    },
+    {
+      "kind": "field",
+      "id": "filing_status_headOfHousehold",
+      "label": "Filing status: Head of household (HOH)",
+      "page": 1,
+      "box": {
+        "x": 349.6,
+        "y": 206.0,
+        "width": 8.0,
+        "height": 8.0
+      },
+      "type": "checkbox",
+      "value": "$.filingStatus",
+      "acroFieldName": "topmostSubform[0].Page1[0].c1_8[0]",
+      "format": {
+        "trueValues": [
+          "headOfHousehold"
+        ]
+      },
+      "condition": {
+        "path": "$.filingStatus",
+        "op": "equals",
+        "value": "headOfHousehold"
+      },
+      "style": {
+        "align": "center",
+        "size": 8.0
+      }
+    },
+    {
+      "kind": "field",
+      "id": "filing_status_qualifyingSurvivingSpouse",
+      "label": "Filing status: Qualifying surviving spouse (QSS)",
+      "page": 1,
+      "box": {
+        "x": 349.6,
+        "y": 218.0,
+        "width": 8.0,
+        "height": 8.0
+      },
+      "type": "checkbox",
+      "value": "$.filingStatus",
+      "acroFieldName": "topmostSubform[0].Page1[0].c1_8[1]",
+      "format": {
+        "trueValues": [
+          "qualifyingSurvivingSpouse"
+        ]
+      },
+      "condition": {
+        "path": "$.filingStatus",
+        "op": "equals",
+        "value": "qualifyingSurvivingSpouse"
+      },
+      "style": {
+        "align": "center",
+        "size": 8.0
+      }
+    },
+    {
+      "kind": "field",
+      "id": "digital_assets_yes",
+      "label": "Digital assets: Yes",
+      "page": 1,
+      "box": {
+        "x": 518.4,
+        "y": 287.0,
+        "width": 8.0,
+        "height": 8.0
+      },
+      "type": "checkbox",
+      "value": "$.digitalAssets",
+      "acroFieldName": "topmostSubform[0].Page1[0].c1_10[0]",
+      "format": {
+        "trueValues": [
+          true
+        ]
+      },
+      "condition": {
+        "path": "$.digitalAssets",
+        "op": "equals",
+        "value": true
+      },
+      "style": {
+        "align": "center",
+        "size": 8.0
+      }
+    },
+    {
+      "kind": "field",
+      "id": "digital_assets_no",
+      "label": "Digital assets: No",
+      "page": 1,
+      "box": {
+        "x": 554.4,
+        "y": 287.0,
+        "width": 8.0,
+        "height": 8.0
+      },
+      "type": "checkbox",
+      "value": "$.digitalAssets",
+      "acroFieldName": "topmostSubform[0].Page1[0].c1_10[1]",
+      "format": {
+        "trueValues": [
+          false
+        ]
+      },
+      "condition": {
+        "path": "$.digitalAssets",
+        "op": "equals",
+        "value": false
+      },
+      "style": {
+        "align": "center",
+        "size": 8.0
+      }
+    },
+    {
+      "kind": "group",
+      "id": "dependents",
+      "label": "Dependents",
+      "page": 1,
+      "source": "$.dependents[*]",
+      "rowHeight": 12.0,
+      "maxRows": 4,
+      "firstRowBox": {
+        "x": 145.0,
+        "y": 309.0,
+        "width": 431.0,
+        "height": 12.0
+      },
+      "overflowStrategy": "error",
+      "columns": [
+        {
+          "kind": "field",
+          "id": "dependent_first_name",
+          "label": "(1) First name",
+          "page": 1,
+          "box": {
+            "x": 145.0,
+            "y": 309.0,
+            "width": 106.25,
+            "height": 12.0
+          },
+          "type": "text",
+          "value": "$.firstName",
+          "acroFieldName": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_31[0]",
+          "overflow": "shrink",
+          "minSize": 5.5,
+          "style": {
+            "size": 8.0
+          }
+        },
+        {
+          "kind": "field",
+          "id": "dependent_last_name",
+          "label": "(2) Last name",
+          "page": 1,
+          "box": {
+            "x": 253.0,
+            "y": 309.0,
+            "width": 106.25,
+            "height": 12.0
+          },
+          "type": "text",
+          "value": "$.lastName",
+          "acroFieldName": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_32[0]",
+          "overflow": "shrink",
+          "minSize": 5.5,
+          "style": {
+            "size": 8.0
+          }
+        },
+        {
+          "kind": "field",
+          "id": "dependent_ssn",
+          "label": "(3) SSN",
+          "page": 1,
+          "box": {
+            "x": 361.0,
+            "y": 309.0,
+            "width": 106.25,
+            "height": 12.0
+          },
+          "type": "ssn",
+          "value": "$.ssn",
+          "acroFieldName": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_33[0]",
+          "format": {
+            "cells": 9
+          },
+          "style": {
+            "font": "Courier",
+            "size": 7.0
+          }
+        },
+        {
+          "kind": "field",
+          "id": "dependent_relationship",
+          "label": "(4) Relationship to you",
+          "page": 1,
+          "box": {
+            "x": 469.0,
+            "y": 309.0,
+            "width": 107.0,
+            "height": 12.0
+          },
+          "type": "text",
+          "value": "$.relationship",
+          "acroFieldName": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_34[0]",
+          "overflow": "shrink",
+          "minSize": 5.5,
+          "style": {
+            "size": 8.0
+          }
+        }
+      ]
+    },
+    {
+      "kind": "field",
+      "id": "more_than_four_dependents",
+      "label": "If more than four dependents, check here",
+      "page": 1,
+      "box": {
+        "x": 79.7,
+        "y": 368.5,
+        "width": 8.0,
+        "height": 8.0
+      },
+      "type": "checkbox",
+      "value": "$.dependentsContinuedOnStatement",
+      "acroFieldName": "topmostSubform[0].Page1[0].Dependents_ReadOrder[0].c1_11[0]",
+      "condition": {
+        "path": "$.dependentsContinuedOnStatement",
+        "op": "truthy"
+      },
+      "style": {
+        "align": "center",
+        "size": 8.0
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_1a_wages_dollars",
+      "label": "1a Total amount from Form(s) W-2, box 1 (dollars)",
+      "page": 1,
+      "box": {
+        "x": 504.0,
+        "y": 450.0,
+        "width": 52.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.income.wages.dollars",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_47[0]",
+      "style": {
+        "align": "right"
+      },
+      "format": {
+        "wholeDollars": true
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_1a_wages_cents",
+      "label": "1a Total amount from Form(s) W-2, box 1 (cents)",
+      "page": 1,
+      "box": {
+        "x": 556.0,
+        "y": 450.0,
+        "width": 20.0,
+        "height": 12.0
+      },
+      "type": "text",
+      "value": "$.income.wages.cents",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_47[0]",
+      "style": {
+        "align": "center"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_1z_total_wages",
+      "label": "1z Add lines 1a through 1h",
+      "page": 1,
+      "box": {
+        "x": 504.0,
+        "y": 558.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.income.totalWages",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_57[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_2a_tax_exempt_interest",
+      "label": "2a Tax-exempt interest",
+      "page": 1,
+      "box": {
+        "x": 252.0,
+        "y": 570.0,
+        "width": 71.25,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.income.taxExemptInterest",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_58[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_2b_taxable_interest",
+      "label": "2b Taxable interest",
+      "page": 1,
+      "box": {
+        "x": 504.0,
+        "y": 570.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.income.taxableInterest",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_59[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_3b_ordinary_dividends",
+      "label": "3b Ordinary dividends",
+      "page": 1,
+      "box": {
+        "x": 504.0,
+        "y": 582.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.income.ordinaryDividends",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_61[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_7_capital_gain_or_loss",
+      "label": "7 Capital gain or (loss)",
+      "page": 1,
+      "box": {
+        "x": 504.0,
+        "y": 690.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.income.capitalGainOrLoss",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_70[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_9_total_income",
+      "label": "9 Total income",
+      "page": 1,
+      "box": {
+        "x": 504.0,
+        "y": 726.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.income.totalIncome",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_73[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_10_adjustments_to_income",
+      "label": "10 Adjustments to income",
+      "page": 1,
+      "box": {
+        "x": 504.0,
+        "y": 738.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.adjustments.total",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_74[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_11a_adjusted_gross_income",
+      "label": "11a Adjusted gross income",
+      "page": 1,
+      "box": {
+        "x": 504.0,
+        "y": 750.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.adjustedGrossIncome",
+      "acroFieldName": "topmostSubform[0].Page1[0].f1_75[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_11b_adjusted_gross_income",
+      "label": "11b Amount from line 11a",
+      "page": 2,
+      "box": {
+        "x": 504.0,
+        "y": 36.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.adjustedGrossIncome",
+      "acroFieldName": "topmostSubform[0].Page2[0].f2_01[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_12e_standard_deduction",
+      "label": "12e Standard deduction or itemized deductions",
+      "page": 2,
+      "box": {
+        "x": 504.0,
+        "y": 96.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.deductions.standard",
+      "acroFieldName": "topmostSubform[0].Page2[0].f2_02[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_15_taxable_income",
+      "label": "15 Taxable income",
+      "page": 2,
+      "box": {
+        "x": 504.0,
+        "y": 144.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.taxableIncome",
+      "acroFieldName": "topmostSubform[0].Page2[0].f2_06[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_16_tax",
+      "label": "16 Tax",
+      "page": 2,
+      "box": {
+        "x": 504.0,
+        "y": 156.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.tax",
+      "acroFieldName": "topmostSubform[0].Page2[0].f2_08[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_24_total_tax",
+      "label": "24 Total tax",
+      "page": 2,
+      "box": {
+        "x": 504.0,
+        "y": 252.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.totalTax",
+      "acroFieldName": "topmostSubform[0].Page2[0].f2_16[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_25a_withheld_from_w2",
+      "label": "25a Federal income tax withheld from Form(s) W-2",
+      "page": 2,
+      "box": {
+        "x": 410.4,
+        "y": 276.0,
+        "width": 71.25,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.payments.withheldFromW2",
+      "acroFieldName": "topmostSubform[0].Page2[0].f2_17[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_33_total_payments",
+      "label": "33 Total payments",
+      "page": 2,
+      "box": {
+        "x": 504.0,
+        "y": 468.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.payments.total",
+      "acroFieldName": "topmostSubform[0].Page2[0].f2_29[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_34_overpaid",
+      "label": "34 Amount overpaid",
+      "page": 2,
+      "box": {
+        "x": 504.0,
+        "y": 480.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.refund.overpaid",
+      "acroFieldName": "topmostSubform[0].Page2[0].f2_30[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "line_35a_refunded_to_you",
+      "label": "35a Amount refunded to you",
+      "page": 2,
+      "box": {
+        "x": 504.0,
+        "y": 492.0,
+        "width": 72.0,
+        "height": 12.0
+      },
+      "type": "currency",
+      "value": "$.refund.refundedToYou",
+      "acroFieldName": "topmostSubform[0].Page2[0].f2_31[0]",
+      "style": {
+        "align": "right"
+      }
+    },
+    {
+      "kind": "field",
+      "id": "taxpayer_occupation",
+      "label": "Your occupation",
+      "page": 2,
+      "box": {
+        "x": 325.0,
+        "y": 646.0,
+        "width": 135.05,
+        "height": 20.0
+      },
+      "type": "text",
+      "value": "$.taxpayer.occupation",
+      "acroFieldName": "topmostSubform[0].Page2[0].f2_40[0]"
+    }
+  ]
+}
