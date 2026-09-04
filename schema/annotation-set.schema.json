@@ -1,0 +1,517 @@
+{
+  "$defs": {
+    "Box": {
+      "description": "Top-left origin, y grows down, units are PDF points.",
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number"
+        },
+        "width": {
+          "title": "Width",
+          "type": "number"
+        },
+        "height": {
+          "title": "Height",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "title": "Box",
+      "type": "object"
+    },
+    "Condition": {
+      "description": "Deliberately an object, not a JSONPath predicate: the spec's JSONPath\nsubset excludes filter expressions, so it cannot express a comparison.",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "op": {
+          "default": "truthy",
+          "enum": [
+            "exists",
+            "absent",
+            "truthy",
+            "equals",
+            "notEquals"
+          ],
+          "title": "Op",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "FieldAnnotation": {
+      "properties": {
+        "kind": {
+          "const": "field",
+          "default": "field",
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "page": {
+          "title": "Page",
+          "type": "integer"
+        },
+        "box": {
+          "$ref": "#/$defs/Box"
+        },
+        "type": {
+          "enum": [
+            "text",
+            "currency",
+            "integer",
+            "decimal",
+            "date",
+            "ssn",
+            "ein",
+            "phone",
+            "zip",
+            "checkbox",
+            "comb"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        },
+        "acroFieldName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Acrofieldname"
+        },
+        "required": {
+          "default": false,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "format": {
+          "$ref": "#/$defs/Format"
+        },
+        "style": {
+          "$ref": "#/$defs/Style"
+        },
+        "overflow": {
+          "default": "shrink",
+          "enum": [
+            "shrink",
+            "clip",
+            "error"
+          ],
+          "title": "Overflow",
+          "type": "string"
+        },
+        "minSize": {
+          "default": 5.0,
+          "title": "Minsize",
+          "type": "number"
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Condition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "page",
+        "box",
+        "type",
+        "value"
+      ],
+      "title": "FieldAnnotation",
+      "type": "object"
+    },
+    "FormMeta": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "taxYear": {
+          "title": "Taxyear",
+          "type": "integer"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "string"
+        },
+        "jurisdiction": {
+          "default": "US-IRS",
+          "title": "Jurisdiction",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "taxYear",
+        "revision"
+      ],
+      "title": "FormMeta",
+      "type": "object"
+    },
+    "Format": {
+      "properties": {
+        "decimals": {
+          "default": 2,
+          "title": "Decimals",
+          "type": "integer"
+        },
+        "thousandsSeparator": {
+          "default": true,
+          "title": "Thousandsseparator",
+          "type": "boolean"
+        },
+        "negative": {
+          "default": "parentheses",
+          "enum": [
+            "parentheses",
+            "minus"
+          ],
+          "title": "Negative",
+          "type": "string"
+        },
+        "zeroSuppress": {
+          "default": true,
+          "title": "Zerosuppress",
+          "type": "boolean"
+        },
+        "wholeDollars": {
+          "default": false,
+          "title": "Wholedollars",
+          "type": "boolean"
+        },
+        "datePattern": {
+          "default": "%m/%d/%Y",
+          "title": "Datepattern",
+          "type": "string"
+        },
+        "cells": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cells"
+        },
+        "checkedGlyph": {
+          "default": "X",
+          "title": "Checkedglyph",
+          "type": "string"
+        },
+        "trueValues": {
+          "items": {},
+          "title": "Truevalues",
+          "type": "array"
+        }
+      },
+      "title": "Format",
+      "type": "object"
+    },
+    "GroupAnnotation": {
+      "properties": {
+        "kind": {
+          "const": "group",
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "page": {
+          "title": "Page",
+          "type": "integer"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "rowHeight": {
+          "title": "Rowheight",
+          "type": "number"
+        },
+        "maxRows": {
+          "title": "Maxrows",
+          "type": "integer"
+        },
+        "firstRowBox": {
+          "$ref": "#/$defs/Box"
+        },
+        "columns": {
+          "items": {
+            "$ref": "#/$defs/FieldAnnotation"
+          },
+          "title": "Columns",
+          "type": "array"
+        },
+        "overflowStrategy": {
+          "default": "statement",
+          "enum": [
+            "statement",
+            "error"
+          ],
+          "title": "Overflowstrategy",
+          "type": "string"
+        },
+        "overflowTarget": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Overflowtarget"
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Condition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "label",
+        "page",
+        "source",
+        "rowHeight",
+        "maxRows",
+        "firstRowBox",
+        "columns"
+      ],
+      "title": "GroupAnnotation",
+      "type": "object"
+    },
+    "PageMeta": {
+      "properties": {
+        "number": {
+          "title": "Number",
+          "type": "integer"
+        },
+        "width": {
+          "title": "Width",
+          "type": "number"
+        },
+        "height": {
+          "title": "Height",
+          "type": "number"
+        }
+      },
+      "required": [
+        "number",
+        "width",
+        "height"
+      ],
+      "title": "PageMeta",
+      "type": "object"
+    },
+    "SourceMeta": {
+      "properties": {
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "pageCount": {
+          "title": "Pagecount",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "url",
+        "sha256",
+        "pageCount"
+      ],
+      "title": "SourceMeta",
+      "type": "object"
+    },
+    "Style": {
+      "properties": {
+        "font": {
+          "default": "Helvetica",
+          "title": "Font",
+          "type": "string"
+        },
+        "fontFallback": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fontfallback"
+        },
+        "size": {
+          "default": 9.0,
+          "title": "Size",
+          "type": "number"
+        },
+        "color": {
+          "default": "#000000",
+          "title": "Color",
+          "type": "string"
+        },
+        "align": {
+          "default": "left",
+          "enum": [
+            "left",
+            "center",
+            "right"
+          ],
+          "title": "Align",
+          "type": "string"
+        },
+        "valign": {
+          "default": "middle",
+          "enum": [
+            "top",
+            "middle",
+            "bottom"
+          ],
+          "title": "Valign",
+          "type": "string"
+        },
+        "padding": {
+          "default": 1.5,
+          "title": "Padding",
+          "type": "number"
+        }
+      },
+      "title": "Style",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "specVersion": {
+      "const": "1.0",
+      "title": "Specversion",
+      "type": "string"
+    },
+    "form": {
+      "$ref": "#/$defs/FormMeta"
+    },
+    "source": {
+      "$ref": "#/$defs/SourceMeta"
+    },
+    "pages": {
+      "items": {
+        "$ref": "#/$defs/PageMeta"
+      },
+      "title": "Pages",
+      "type": "array"
+    },
+    "defaults": {
+      "$ref": "#/$defs/Style"
+    },
+    "annotations": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "field": "#/$defs/FieldAnnotation",
+            "group": "#/$defs/GroupAnnotation"
+          },
+          "propertyName": "kind"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/FieldAnnotation"
+          },
+          {
+            "$ref": "#/$defs/GroupAnnotation"
+          }
+        ]
+      },
+      "title": "Annotations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "specVersion",
+    "form",
+    "source",
+    "pages",
+    "annotations"
+  ],
+  "title": "AnnotationSet",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instead.example/schema/annotation-set-1.0.json"
+}
