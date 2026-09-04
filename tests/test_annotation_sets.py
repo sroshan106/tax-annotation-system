@@ -26,11 +26,17 @@ def test_every_box_sits_on_its_page(set_path, pdf):
     aset = load_set(set_path)
     pages = {p.number: p for p in aset.pages}
     for a in aset.annotations:
-        boxes = [a.box] if isinstance(a, FieldAnnotation) else [a.firstRowBox]
-        for b in boxes:
-            pg = pages[a.page]
-            assert 0 <= b.x and b.x + b.width <= pg.width, a.id
-            assert 0 <= b.y and b.y + b.height <= pg.height, a.id
+        pg = pages[a.page]
+        if isinstance(a, FieldAnnotation):
+            assert 0 <= a.box.x and a.box.x + a.box.width <= pg.width, a.id
+            assert 0 <= a.box.y and a.box.y + a.box.height <= pg.height, a.id
+        else:
+            assert 0 <= a.firstRowBox.x and a.firstRowBox.x + a.firstRowBox.width <= pg.width, a.id
+            assert 0 <= a.firstRowBox.y and a.firstRowBox.y + a.firstRowBox.height <= pg.height, a.id
+            for c in a.columns:
+                assert 0 <= c.box.x and c.box.x + c.box.width <= pg.width, f"{a.id}.{c.id}"
+                assert 0 <= c.box.y and c.box.y + c.box.height <= pg.height, f"{a.id}.{c.id}"
+
 
 
 def test_the_1040_set_covers_every_declared_field_type():

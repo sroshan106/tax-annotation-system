@@ -65,3 +65,9 @@ def test_checkbox(raw, expected):
 def test_integer_and_text_passthrough():
     assert format_value(ann("integer"), 3) == "3"
     assert format_value(ann("text"), "Ada Lovelace") == "Ada Lovelace"
+
+def test_decimal_formatting():
+    assert format_value(ann("decimal"), 42.5) == "42.50"
+    assert format_value(ann("decimal", decimals=1), 42.5) == "42.5"
+    assert format_value(ann("decimal"), 1234.567) == "1,234.57"
+

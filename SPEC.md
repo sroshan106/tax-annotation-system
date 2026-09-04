@@ -149,8 +149,10 @@ Formats numeric values as whole numbers.
 - **Rendered Output**: `"42"`
 
 ### `decimal`
-Formats numeric values as decimals (passthrough of float value).
-- **Input Example**: `{"value": 42.5}`
+Formats numeric values with `Format.decimals` (default 2) and optional thousands separators (shares implementation with `currency` via `_money()`).
+- **Input Example (Default `decimals: 2`)**: `{"value": 42.5}`
+- **Rendered Output**: `"42.50"`
+- **Input Example (Custom `decimals: 1`)**: `{"value": 42.5}` (with `decimals: 1`)
 - **Rendered Output**: `"42.5"`
 
 ### `date`

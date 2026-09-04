@@ -21,7 +21,9 @@ def index():
 
 @bp.post("/api/render")
 def api_render():
-    body = request.get_json(silent=True) or {}
+    body = request.get_json(silent=True)
+    if not isinstance(body, dict):
+        return jsonify(error="invalid request: payload must be a JSON object"), 400
     entry = FORMS.get(body.get("form", ""))
     if entry is None:
         return jsonify(error=f"unknown form {body.get('form')!r}"), 404
@@ -37,7 +39,9 @@ def api_render():
 
 @bp.post("/api/validate")
 def api_validate():
-    body = request.get_json(silent=True) or {}
+    body = request.get_json(silent=True)
+    if not isinstance(body, dict):
+        return jsonify(error="invalid request: payload must be a JSON object"), 400
     entry = FORMS.get(body.get("form", ""))
     if entry is None:
         return jsonify(error=f"unknown form {body.get('form')!r}"), 404

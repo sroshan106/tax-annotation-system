@@ -36,3 +36,13 @@ def test_a_required_path_missing_from_the_data_is_a_422_with_the_annotation_id(c
 def test_validate_reports_clean_for_a_shipped_set(client):
     r = client.post("/api/validate", json={"form": "f1040"})
     assert r.get_json() == {"valid": True, "warnings": [], "errors": []}
+
+def test_non_dict_json_returns_400(client):
+    r = client.post("/api/render", json=["not", "a", "dict"])
+    assert r.status_code == 400
+    assert r.get_json() == {"error": "invalid request: payload must be a JSON object"}
+
+    r_val = client.post("/api/validate", json=["not", "a", "dict"])
+    assert r_val.status_code == 400
+    assert r_val.get_json() == {"error": "invalid request: payload must be a JSON object"}
+
