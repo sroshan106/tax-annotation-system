@@ -25,7 +25,7 @@ The reference pipeline operates in 4 decoupled modules:
 
 ## Specification
 
-Read the full format specification here: [SPEC.md](SPEC.md).
+Read the full format specification here: [SPEC.md](./SPEC.md).
 
 ## Web Interface & Debug Mode
 
