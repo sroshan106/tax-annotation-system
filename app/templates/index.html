@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instead — Form Renderer & Debug Overlay</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --border: #cbd5e1;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --error-bg: #fee2e2;
+      --error-text: #991b1b;
+      --error-border: #f87171;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.5;
+    }
+    h1 {
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #64748b;
+      margin-top: 0;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    select, textarea, input[type="file"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    textarea {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      resize: vertical;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .checkbox-group label {
+      margin-bottom: 0;
+      font-weight: normal;
+      cursor: pointer;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+    }
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.15s ease-in-out;
+    }
+    button:hover {
+      background-color: var(--primary-hover);
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    #error-box {
+      display: none;
+      margin-top: 20px;
+      padding: 16px;
+      background-color: var(--error-bg);
+      border: 1px solid var(--error-border);
+      border-radius: 6px;
+      color: var(--error-text);
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Instead</h1>
+  <p class="subtitle">Government form renderer with transparent overlay & debug boundaries</p>
+
+  <div class="card">
+    <div class="form-group">
+      <label for="form-select">Form</label>
+      <select id="form-select" name="form">
+        {% for f in forms %}
+        <option value="{{ f }}">{{ f }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="file-upload">Upload Dataset (JSON)</label>
+      <input type="file" id="file-upload" accept=".json,application/json">
+    </div>
+
+    <div class="form-group">
+      <label for="dataset-input">Dataset JSON</label>
+      <textarea id="dataset-input" name="dataset" rows="14" placeholder='{"taxpayer": {"firstName": "Ada", ...}}'></textarea>
+    </div>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="debug-check" name="debug">
+      <label for="debug-check">Render red debug bounding boxes and annotation IDs</label>
+    </div>
+
+    <div class="actions">
+      <button type="button" id="render-btn">Render &amp; Download PDF</button>
+    </div>
+
+    <pre id="error-box"></pre>
+  </div>
+
+  <script>
+    const formSelect = document.getElementById("form-select");
+    const fileUpload = document.getElementById("file-upload");
+    const datasetInput = document.getElementById("dataset-input");
+    const debugCheck = document.getElementById("debug-check");
+    const renderBtn = document.getElementById("render-btn");
+    const errorBox = document.getElementById("error-box");
+
+    fileUpload.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        datasetInput.value = event.target.result;
+      };
+      reader.readAsText(file);
+    });
+
+    renderBtn.addEventListener("click", async () => {
+      errorBox.style.display = "none";
+      errorBox.textContent = "";
+
+      let data = {};
+      const rawText = datasetInput.value.trim();
+      if (rawText) {
+        try {
+          data = JSON.parse(rawText);
+        } catch (err) {
+          errorBox.textContent = "Invalid JSON: " + err.message;
+          errorBox.style.display = "block";
+          return;
+        }
+      }
+
+      renderBtn.disabled = true;
+      renderBtn.textContent = "Rendering...";
+
+      try {
+        const response = await fetch("/api/render", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            form: formSelect.value,
+            data: data,
+            debug: debugCheck.checked
+          })
+        });
+
+        if (!response.ok) {
+          const body = await response.json().catch(() => ({ error: response.statusText }));
+          errorBox.textContent = body.error || JSON.stringify(body);
+          errorBox.style.display = "block";
+        } else {
+          const blob = await response.blob();
+          const downloadUrl = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = downloadUrl;
+          a.download = `${formSelect.value}-filled.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(downloadUrl);
+        }
+      } catch (err) {
+        errorBox.textContent = "Request failed: " + err.message;
+        errorBox.style.display = "block";
+      } finally {
+        renderBtn.disabled = false;
+        renderBtn.textContent = "Render & Download PDF";
+      }
+    });
+  </script>
+</body>
+</html>
