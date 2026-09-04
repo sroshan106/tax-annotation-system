@@ -149,6 +149,8 @@ class AnnotationSet(BaseModel):
     def _referential_integrity(self):
         pages = {p.number for p in self.pages}
         seen: set[str] = set()
+        top_level_field_ids = {a.id for a in self.annotations
+                               if isinstance(a, FieldAnnotation)}
         for a in self.annotations:
             if a.page not in pages:
                 raise ValueError(f"{a.id}: page {a.page} is not declared in pages[]")
@@ -163,4 +165,14 @@ class AnnotationSet(BaseModel):
                 if a.overflowStrategy == "statement" and not a.overflowTarget:
                     raise ValueError(
                         f"{a.id}: overflowStrategy 'statement' requires overflowTarget")
+        # Second pass: overflowTarget must name a top-level FieldAnnotation
+        # (the renderer's overflow pass never visits group columns), and a
+        # group may be declared before its target, so this can't be checked
+        # in the loop above.
+        for a in self.annotations:
+            if isinstance(a, GroupAnnotation) and a.overflowTarget is not None:
+                if a.overflowTarget not in top_level_field_ids:
+                    raise ValueError(
+                        f"{a.id}: overflowTarget {a.overflowTarget!r} does not "
+                        "name a top-level field annotation")
         return self

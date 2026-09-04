@@ -23,7 +23,7 @@ def test_minimal_set_validates():
     assert s.annotations[0].box == Box(x=40, y=96, width=200, height=14)
 
 def test_kind_discriminates_field_from_group():
-    doc = {**MINIMAL, "annotations": [{
+    doc = {**MINIMAL, "annotations": [MINIMAL["annotations"][0], {
         "kind": "group", "id": "sch_b_payers", "label": "Payers",
         "page": 1, "source": "$.income.interest[*]",
         "rowHeight": 16, "maxRows": 14,
@@ -34,7 +34,21 @@ def test_kind_discriminates_field_from_group():
                      "type": "text", "value": "$.name"}],
     }]}
     s = AnnotationSet.model_validate(doc)
-    assert s.annotations[0].kind == "group"
+    assert s.annotations[1].kind == "group"
+
+def test_overflow_target_must_be_top_level_field():
+    doc = {**MINIMAL, "annotations": [MINIMAL["annotations"][0], {
+        "kind": "group", "id": "sch_b_payers", "label": "Payers",
+        "page": 1, "source": "$.income.interest[*]",
+        "rowHeight": 16, "maxRows": 14,
+        "firstRowBox": {"x": 40, "y": 200, "width": 400, "height": 14},
+        "overflowStrategy": "statement", "overflowTarget": "does_not_exist",
+        "columns": [{"kind": "field", "id": "payer", "label": "Payer",
+                     "page": 1, "box": {"x": 0, "y": 0, "width": 300, "height": 14},
+                     "type": "text", "value": "$.name"}],
+    }]}
+    with pytest.raises(ValidationError, match="does not name a top-level field annotation"):
+        AnnotationSet.model_validate(doc)
 
 def test_non_base14_font_requires_fallback():
     doc = {**MINIMAL, "annotations": [{**MINIMAL["annotations"][0],
