@@ -130,4 +130,19 @@ def render(aset: AnnotationSet, data: dict, pdf_path: Path, *, debug: bool = Fal
 
 
 def _draw_group(c, aset, grp: GroupAnnotation, data, page_h: float, debug: bool):
-    raise NotImplementedError("Task 7")
+    if not evaluate(grp.condition, data):
+        return
+    rows = resolve_many(grp.source, data)
+    if len(rows) > grp.maxRows and grp.overflowStrategy == "error":
+        raise ValueError(
+            f"{grp.id}: {len(rows)} rows exceed maxRows={grp.maxRows}")
+    for n, row in enumerate(rows[:grp.maxRows]):
+        dy = n * grp.rowHeight
+        for col in grp.columns:
+            shifted = col.model_copy(deep=True)
+            shifted.box = col.box.model_copy(
+                update={"y": grp.firstRowBox.y + dy})
+            shifted.id = f"{grp.id}[{n}].{col.id}"
+            _draw_field(c, aset, shifted, row, page_h)
+            if debug:
+                _draw_debug(c, shifted.box, page_h, shifted.id)
