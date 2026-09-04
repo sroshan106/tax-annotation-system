@@ -164,7 +164,7 @@ Parses ISO 8601 strings and formats them using `format.datePattern`.
 Prints `format.checkedGlyph` if the value matches any item in `format.trueValues`.
 - **Input Example**: `{"value": true}` (with `checkedGlyph: "X"`)
 - **Rendered Output**: `"X"`
-achine-checkable data structure and reference pipeline for printing values from an arbitrary JSON dataset into the correct boxes of a U.S. tax form.
+
 ### `currency`
 Highly configurable numeric formatting supporting decimals, thousands separators, zero suppression, and whole dollar rounding.
 - **Thousands Separators**: 
@@ -223,42 +223,3 @@ Similar to `comb`, specialized for Zip codes.
 - `source.sha256` ensures the annotation set matches the underlying PDF.
 - A hash mismatch emits a warning by default to accommodate IRS silent reissues.
 - `--strict` mode upgrades this warning to a hard failure.
-
-## 9. Decisions and Rejected Alternatives
-| # | Decision | Why |
-|---|---|---|
-| D1 | Coordinates are the primary anchor; `acroFieldName` is an optional cross-check hint. Coordinates win on conflict. | AcroForm names fail on scanned/non-fillable forms, are opaque, churn yearly, and cannot express *how* to print. |
-| D2 | Top-left origin. | Matches how humans author and how HTML/canvas consumers work. |
-| D3 | Values referenced by a documented JSONPath subset. | De facto standard with libraries in every language. Filters excluded: inconsistently-implemented and a code-execution surface. |
-| D4 | Pydantic v2 models are canonical; `schema/annotation-set.schema.json` is generated. | One artifact yields both formats and gives validation for free. |
-| D5 | Annotation sets are JSON files in git, one per form-year. | Published form-year data is immutable. A database is only justified by an authoring UI, which is out of scope. |
-| D6 | reportlab overlay merged by pypdf onto the untouched IRS PDF. | Both permissively licensed. pypdf-only rejected: no alignment/clipping/pitch control. |
-| D7 | `condition` is an object `{ path, op, value? }`, **not** a JSONPath predicate. | A predicate would need the filter grammar D3 excludes. |
-| D8 | Split dollar/cents lines are **two annotations** sharing an id prefix. | `box` is one rect. A "two-box format" would contradict the model for one form's convention. |
-| D9 | Computed lines (`Line 9 = 1z + 2b + …`) are plain JSONPaths into a dataset the caller already computed. No `compute` operator. | Tax logic is the platform's crown jewel and belongs a layer up. |
-| D10 | Annotation sets cover a **representative subset**, not all widgets. | Past ~40 annotations the work is mechanical and adds no new evidence about the spec. |
-| D11 | `source.sha256` mismatch is a **warning**, not a hard failure, unless `--strict`. | IRS silently reissues PDFs at the same URL. |
-
-## 10. Non-goals
-- No tax calculation.
-- No e-file/MeF.
-- No OCR.
-- No PDF authoring from scratch.
-- No authoring UI.
-- No state forms in v1.
-
-## 11. Future Enhancements
-Deliberately not built in v1, but considered for future iterations:
-- **`Style.rotation`**: Triggered by the first rotated state form.
-- **`overflow: "wrap"` / `"truncate"` / `FieldType: "multiline"`**: Triggered by the first free-text explanation box.
-- **`overflowStrategy: "continuation"`**: Triggered by the first return with more Schedule B payers than a statement can absorb.
-- **Text-anchored authoring**: That *emits* coordinates.
-- **Visual annotation editor**: The change that would justify a database.
-- **Form-revision diffing**: Using `acroFieldName` to report which boxes moved between years.
-- **State and prior-year forms**: Via `form.jurisdiction`.
-- **Spanish-language variants (`f1040sp`)**: Which share geometry.
-- **Barcode/2-D matrix annotations**: For state forms.
-- **HTML/canvas renderer**: To prove the format is not a reportlab config file in disguise.
-- **Publishable conformance fixture suite**.
-- **Tagged-PDF accessibility output**.
-- **Limitations**: Group model v1 column-major checkbox grids cannot be expressed as row-major group columns.

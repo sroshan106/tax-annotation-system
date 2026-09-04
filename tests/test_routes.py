@@ -91,3 +91,9 @@ def test_example_endpoint_unknown_is_404(client):
     r = client.get("/api/examples/unknown.json")
     assert r.status_code == 404
 
+
+def test_healthz_endpoint(client):
+    r = client.get("/healthz")
+    assert r.status_code == 200
+    assert r.get_json() == {"status": "healthy"}
+

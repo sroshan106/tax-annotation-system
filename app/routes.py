@@ -93,3 +93,9 @@ def api_example(filename: str):
         return jsonify(data)
     except Exception as exc:
         return jsonify(error=str(exc)), 500
+
+
+@bp.get("/healthz")
+def healthz():
+    return jsonify(status="healthy"), 200
+
