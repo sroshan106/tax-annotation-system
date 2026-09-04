@@ -9,264 +9,1492 @@
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #0f172a;
+      --text-secondary: #334155;
       --muted: #64748b;
-      --border: #cbd5e1;
+      --border: #e2e8f0;
+      --border-dark: #cbd5e1;
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
-      --error-bg: #fee2e2;
+      --primary-light: #eff6ff;
+      --badge-bg: #dbeafe;
+      --badge-color: #1d4ed8;
+      --error-bg: #fef2f2;
       --error-text: #991b1b;
-      --error-border: #f87171;
+      --error-border: #fecaca;
+      --success-bg: #f0fdf4;
+      --success-text: #166534;
+      --success-border: #bbf7d0;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.07);
     }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      max-width: 1440px;
-      margin: 32px auto;
-      padding: 0 24px;
+      margin: 0;
+      padding: 24px;
       line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
-    h1 {
-      margin-bottom: 8px;
+
+    .app-header {
+      max-width: 1440px;
+      margin: 0 auto 20px auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .subtitle {
+
+    .app-title-group h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 2px 0;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .app-title-group p {
+      margin: 0;
       color: var(--muted);
-      margin-top: 0;
-      margin-bottom: 24px;
+      font-size: 13px;
     }
+
     .layout-container {
+      max-width: 1440px;
+      margin: 0 auto;
       display: grid;
-      grid-template-columns: minmax(380px, 1fr) minmax(500px, 1.3fr);
+      grid-template-columns: minmax(420px, 1fr) minmax(560px, 1.35fr);
       gap: 24px;
       align-items: start;
     }
-    @media (max-width: 960px) {
+
+    @media (max-width: 1024px) {
       .layout-container {
         grid-template-columns: 1fr;
       }
     }
+
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 12px;
       padding: 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      box-shadow: var(--shadow-sm);
     }
-    .form-group {
-      margin-bottom: 20px;
+
+    /* Section Header with badge */
+    .step-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 24px;
     }
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-    select, textarea, input[type="file"] {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 8px 12px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: var(--badge-bg);
+      color: var(--badge-color);
+      font-weight: 700;
       font-size: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 2px;
     }
-    textarea {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+    .step-title-group h2 {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 2px 0;
+      color: var(--text);
+    }
+
+    .step-title-group p {
+      margin: 0;
+      color: var(--muted);
       font-size: 13px;
-      resize: vertical;
     }
-    .checkbox-group {
+
+    /* Section Label with Icon */
+    .section-label-group {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
     }
-    .checkbox-group label {
-      margin-bottom: 0;
-      font-weight: normal;
+
+    .section-label-group svg {
+      width: 16px;
+      height: 16px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    /* Form Template Row */
+    .template-selector-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .select-wrapper {
+      position: relative;
+      flex: 1;
+    }
+
+    select {
+      width: 100%;
+      padding: 9px 36px 9px 12px;
+      border: 1px solid var(--border-dark);
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text);
+      background-color: #ffffff;
+      appearance: none;
       cursor: pointer;
+      font-weight: 500;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
-    .actions {
+
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .select-chevron {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--muted);
+      width: 14px;
+      height: 14px;
+    }
+
+    .btn-info {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: #ffffff;
+      border: 1px solid var(--border-dark);
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .btn-info:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+
+    .btn-info svg {
+      width: 15px;
+      height: 15px;
+      color: var(--muted);
+    }
+
+    /* Tabs Component */
+    .tabs-nav {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+      padding-bottom: 2px;
+    }
+
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: #f1f5f9;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      background: var(--primary-light);
+      border-color: #bfdbfe;
+      font-weight: 600;
+    }
+
+    .tab-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Dropzone */
+    .dropzone {
+      border: 2px dashed #93c5fd;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 24px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+
+    .dropzone.dragover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .dropzone-icon {
+      width: 36px;
+      height: 36px;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .dropzone-primary-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .dropzone-subtext {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .dropzone-file-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #ffffff;
+      border: 1px solid var(--border-dark);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .dropzone-file-status {
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: 8px;
+    }
+
+    /* Example quick pills */
+    .examples-subgroup {
+      margin-top: 16px;
+    }
+
+    .examples-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .sample-pills-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 8px;
     }
-    button {
+
+    .sample-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sample-pill:hover {
+      border-color: #93c5fd;
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .sample-pill.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .sample-pill svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    /* Example Cards List (Tab 2) */
+    .example-cards-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .example-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .example-card:hover {
+      border-color: #93c5fd;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .example-card-info h4 {
+      margin: 0 0 2px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .example-card-info p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .example-card-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--primary);
+      background: var(--primary-light);
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .example-card-btn:hover {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    /* Textarea (Tab 3) */
+    .paste-textarea-wrapper {
+      position: relative;
+    }
+
+    .textarea-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .textarea-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-text {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 12px;
+      color: var(--primary);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-dark);
+      border-radius: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.45;
+      resize: vertical;
+      color: var(--text);
+      background: #ffffff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    /* Status Banner */
+    .status-badge {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      padding: 8px 12px;
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      border-radius: 6px;
+      color: var(--success-text);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-badge svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    /* Options Section */
+    .options-section {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text);
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid var(--border-dark);
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+
+    .tooltip-icon {
+      color: var(--muted);
+      cursor: help;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .tooltip-icon svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Action Buttons */
+    .actions-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    button.btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       background-color: var(--primary);
-      color: white;
+      color: #ffffff;
       border: 1px solid transparent;
       padding: 10px 20px;
-      border-radius: 6px;
-      font-size: 15px;
-      font-weight: 500;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+      transition: background-color 0.15s, transform 0.05s;
+      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
     }
-    button:hover {
+
+    button.btn-primary:hover {
       background-color: var(--primary-hover);
     }
+
+    button.btn-primary:active {
+      transform: translateY(1px);
+    }
+
     button.btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       background-color: #ffffff;
       color: var(--text);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-dark);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.15s, border-color 0.15s;
+      box-shadow: var(--shadow-sm);
     }
+
     button.btn-secondary:hover {
       background-color: #f1f5f9;
       border-color: #94a3b8;
     }
-    button.btn-sm {
-      padding: 6px 14px;
-      font-size: 13px;
-    }
+
     button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
+
+    button svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Error Box */
     #error-box {
       display: none;
-      margin-top: 20px;
-      padding: 16px;
+      margin-top: 18px;
+      padding: 12px 16px;
       background-color: var(--error-bg);
       border: 1px solid var(--error-border);
-      border-radius: 6px;
+      border-radius: 8px;
       color: var(--error-text);
+      font-size: 13px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       white-space: pre-wrap;
       word-break: break-word;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 13px;
     }
+
+    /* Right Panel (Preview) */
     .right-panel {
       display: flex;
       flex-direction: column;
-      height: calc(100vh - 140px);
-      min-height: 720px;
+      height: calc(100vh - 110px);
+      min-height: 740px;
       padding: 0;
       overflow: hidden;
+      position: relative;
     }
-    .panel-header {
-      padding: 14px 20px;
+
+    .preview-header-bar {
+      padding: 18px 24px;
       border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #f8fafc;
+      background: #ffffff;
     }
-    .panel-header h2 {
-      font-size: 15px;
-      margin: 0;
-      font-weight: 600;
+
+    .preview-header-bar .step-header {
+      margin-bottom: 0;
+    }
+
+    /* Preview Controls Toolbar */
+    .preview-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid var(--border-dark);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tool-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .tool-btn:hover {
+      background: #f1f5f9;
       color: var(--text);
     }
+
+    .tool-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .zoom-level-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      padding: 0 8px;
+      min-width: 44px;
+      text-align: center;
+      user-select: none;
+    }
+
+    /* Preview Body & Empty State */
     .preview-body {
       flex: 1;
       display: flex;
       flex-direction: column;
       position: relative;
-      background: #e2e8f0;
+      background: #f8fafc;
+      overflow: hidden;
     }
+
     .preview-placeholder {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       flex: 1;
-      color: var(--muted);
       text-align: center;
-      padding: 32px;
-      background: var(--card-bg);
+      padding: 40px 24px;
+      background: #ffffff;
+      border: 2px dashed #e2e8f0;
+      margin: 16px;
+      border-radius: 10px;
     }
-    .preview-placeholder svg {
-      width: 48px;
-      height: 48px;
-      stroke: #94a3b8;
-      margin-bottom: 12px;
+
+    .empty-doc-icon {
+      width: 54px;
+      height: 54px;
+      color: #94a3b8;
+      margin-bottom: 16px;
     }
+
+    .preview-placeholder h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 6px 0;
+      color: var(--text);
+    }
+
+    .preview-placeholder p {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 36px 0;
+      max-width: 440px;
+    }
+
+    /* 3 Step Onboarding Cards in Empty State */
+    .onboarding-steps-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    @media (max-width: 640px) {
+      .onboarding-steps-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .onboarding-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 14px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .onboarding-card-icon {
+      width: 28px;
+      height: 28px;
+      color: var(--muted);
+      margin: 0 auto 10px auto;
+      display: block;
+    }
+
+    .onboarding-card h4 {
+      margin: 0 0 4px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .onboarding-card p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Rendered iframe */
+    .preview-frame-wrapper {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: auto;
+      display: none;
+      background: #525659;
+    }
+
     .preview-frame {
       width: 100%;
       height: 100%;
-      flex: 1;
       border: none;
+      display: block;
+      transform-origin: top center;
+    }
+
+    /* Modal Dialog */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(2px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      width: 100%;
+      max-width: 520px;
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      border-radius: 4px;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--text);
+      background: #f1f5f9;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .info-table tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .info-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .info-table td {
+      padding: 10px 4px;
+    }
+
+    .info-table td:first-child {
+      font-weight: 600;
+      color: var(--text-secondary);
+      width: 38%;
+    }
+
+    .info-table td:last-child {
+      color: var(--text);
+    }
+
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      background: #f8fafc;
     }
   </style>
 </head>
 <body>
-  <h1>Instead</h1>
-  <p class="subtitle">Government form renderer with transparent overlay & debug boundaries</p>
 
   <div class="layout-container">
+    <!-- Left Panel: Configure Input -->
     <div class="card left-panel">
+      <!-- Step 1 Header -->
+      <div class="step-header">
+        <span class="step-badge">1</span>
+        <div class="step-title-group">
+          <h2>1. Configure Input</h2>
+          <p>Select a form template and provide the data to render.</p>
+        </div>
+      </div>
+
+      <!-- Form Template Section -->
       <div class="form-group">
-        <label for="form-select">Form</label>
-        <select id="form-select" name="form">
-          {% for f in forms %}
-          <option value="{{ f }}">{{ f }}</option>
-          {% endfor %}
-        </select>
+        <div class="section-label-group">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span>Form Template</span>
+        </div>
+        <div class="template-selector-row">
+          <div class="select-wrapper">
+            <select id="form-select" name="form">
+              {% for f in forms %}
+              <option value="{{ f }}">{{ f }}</option>
+              {% endfor %}
+            </select>
+            <svg class="select-chevron" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+          <button type="button" id="view-template-info-btn" class="btn-info" title="View form template details">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>View template info</span>
+          </button>
+        </div>
       </div>
 
+      <!-- Dataset (JSON) Section -->
       <div class="form-group">
-        <label for="file-upload">Upload Dataset (JSON)</label>
-        <input type="file" id="file-upload" accept=".json,application/json">
+        <div class="section-label-group">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+          </svg>
+          <span>Dataset (JSON)</span>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-nav">
+          <button type="button" class="tab-btn active" data-tab="tab-upload">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            Upload File
+          </button>
+          <button type="button" class="tab-btn" data-tab="tab-examples">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Example JSONs
+          </button>
+          <button type="button" class="tab-btn" data-tab="tab-paste">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            </svg>
+            Paste JSON
+          </button>
+        </div>
+
+        <!-- Tab 1: Upload File -->
+        <div id="tab-upload" class="tab-pane active">
+          <div id="dropzone" class="dropzone">
+            <svg class="dropzone-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+            </svg>
+            <div class="dropzone-primary-text">Drag &amp; drop a JSON file here</div>
+            <div class="dropzone-subtext">or click to browse</div>
+            <div style="display: flex; align-items: center; justify-content: center;">
+              <span class="dropzone-file-trigger">Choose File</span>
+              <span id="file-status-text" class="dropzone-file-status">No file chosen</span>
+            </div>
+            <input type="file" id="file-upload" accept=".json,application/json" style="display: none;">
+          </div>
+
+          <!-- Quick Example Pills -->
+          <div class="examples-subgroup">
+            <div class="examples-label">Or try an example:</div>
+            <div class="sample-pills-row">
+              <button type="button" class="sample-pill" data-file="simple-w2.json">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Sample - Individual
+              </button>
+              <button type="button" class="sample-pill" data-file="joint-dependents.json">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                Sample - Married
+              </button>
+              <button type="button" class="sample-pill" data-file="schedule-b-overflow.json">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                Sample - Business
+              </button>
+              <button type="button" class="sample-pill" data-file="schema-minimal.json">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Minimal Data
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Example JSONs Gallery -->
+        <div id="tab-examples" class="tab-pane">
+          <div class="example-cards-grid">
+            <div class="example-card">
+              <div class="example-card-info">
+                <h4>Sample - Individual (Form 1040)</h4>
+                <p>Single wage earner with W-2 income & standard deduction.</p>
+              </div>
+              <button type="button" class="example-card-btn" data-file="simple-w2.json">Load</button>
+            </div>
+            <div class="example-card">
+              <div class="example-card-info">
+                <h4>Sample - Married Filing Jointly</h4>
+                <p>Joint return with spouse & dependent child tax credit.</p>
+              </div>
+              <button type="button" class="example-card-btn" data-file="joint-dependents.json">Load</button>
+            </div>
+            <div class="example-card">
+              <div class="example-card-info">
+                <h4>Sample - Business & Schedule B</h4>
+                <p>Interest and dividend income with Schedule B multi-row data.</p>
+              </div>
+              <button type="button" class="example-card-btn" data-file="schedule-b-overflow.json">Load</button>
+            </div>
+            <div class="example-card">
+              <div class="example-card-info">
+                <h4>Minimal Test Dataset</h4>
+                <p>Smallest valid payload for swift render & coordinate smoke test.</p>
+              </div>
+              <button type="button" class="example-card-btn" data-file="schema-minimal.json">Load</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Paste JSON -->
+        <div id="tab-paste" class="tab-pane">
+          <div class="paste-textarea-wrapper">
+            <div class="textarea-toolbar">
+              <span id="json-stats-text">JSON payload editor</span>
+              <div class="textarea-actions">
+                <button type="button" id="format-json-btn" class="btn-text">Format</button>
+                <button type="button" id="clear-json-btn" class="btn-text">Clear</button>
+              </div>
+            </div>
+            <textarea id="dataset-input" name="dataset" rows="12" placeholder='{"taxpayer": {"firstName": "Ada", "lastName": "Lovelace", ...}}'></textarea>
+          </div>
+        </div>
+
+        <!-- Feedback indicator badge -->
+        <div id="status-badge" class="status-badge">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+          <span id="status-badge-text">Dataset loaded successfully</span>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="dataset-input">Dataset JSON</label>
-        <textarea id="dataset-input" name="dataset" rows="14" placeholder='{"taxpayer": {"firstName": "Ada", ...}}'></textarea>
+      <!-- Options Section -->
+      <div class="options-section">
+        <div class="section-label-group">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span>Options</span>
+        </div>
+        <label class="checkbox-row" for="debug-check">
+          <input type="checkbox" id="debug-check" name="debug">
+          <span>Render red debug bounding boxes and annotation IDs</span>
+          <span class="tooltip-icon" title="Draws red rectangles and field annotation IDs on the PDF for geometry verification.">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </span>
+        </label>
       </div>
 
-      <div class="checkbox-group">
-        <input type="checkbox" id="debug-check" name="debug">
-        <label for="debug-check">Render red debug bounding boxes and annotation IDs</label>
+      <!-- Action Buttons -->
+      <div class="actions-row">
+        <button type="button" id="preview-btn" class="btn-primary">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+          Preview PDF
+        </button>
+        <button type="button" id="download-btn" class="btn-secondary">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Render &amp; Download PDF
+        </button>
       </div>
 
-      <div class="actions">
-        <button type="button" id="preview-btn">Preview PDF</button>
-        <button type="button" id="download-btn" class="btn-secondary">Render &amp; Download PDF</button>
-      </div>
-
+      <!-- Error box -->
       <pre id="error-box"></pre>
     </div>
 
-    <div class="card right-panel">
-      <div class="panel-header">
-        <h2>PDF Preview</h2>
-        <button type="button" id="preview-download-btn" class="btn-secondary btn-sm" style="display: none;">Download PDF</button>
+    <!-- Right Panel: PDF Preview -->
+    <div class="card right-panel" id="preview-card">
+      <div class="preview-header-bar">
+        <div class="step-header">
+          <span class="step-badge">2</span>
+          <div class="step-title-group">
+            <h2>2. PDF Preview</h2>
+            <p>The rendered form will appear here. Click &ldquo;Preview PDF&rdquo; to generate.</p>
+          </div>
+        </div>
+
+        <!-- Preview Toolbar Controls -->
+        <div class="preview-toolbar">
+          <div class="toolbar-group">
+            <button type="button" id="zoom-fit-btn" class="tool-btn" title="Reset to 100%">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+            <button type="button" id="zoom-out-btn" class="tool-btn" title="Zoom Out (-)">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
+              </svg>
+            </button>
+            <span id="zoom-level-label" class="zoom-level-text">100%</span>
+            <button type="button" id="zoom-in-btn" class="tool-btn" title="Zoom In (+)">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+            <button type="button" id="fullscreen-btn" class="tool-btn" title="Toggle Fullscreen">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+            </button>
+          </div>
+          <button type="button" id="preview-download-btn" class="btn-secondary" style="display: none; padding: 6px 12px; font-size: 13px;">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Download
+          </button>
+        </div>
       </div>
-      <div class="preview-body">
+
+      <!-- Preview Body Area -->
+      <div class="preview-body" id="preview-body">
+        <!-- Empty State Placeholder -->
         <div id="preview-placeholder" class="preview-placeholder">
-          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <svg class="empty-doc-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
           </svg>
-          <p>Click <strong>Preview PDF</strong> to view the rendered form here.</p>
+          <h3>No PDF to preview</h3>
+          <p>Upload a dataset and click &ldquo;Preview PDF&rdquo; to see the rendered form.</p>
+
+          <!-- 3 Step Cards -->
+          <div class="onboarding-steps-container">
+            <div class="onboarding-card">
+              <svg class="onboarding-card-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+              </svg>
+              <h4>1. Select form</h4>
+              <p>Choose a government form template</p>
+            </div>
+            <div class="onboarding-card">
+              <svg class="onboarding-card-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+              </svg>
+              <h4>2. Upload or choose JSON</h4>
+              <p>Provide data via file, example or paste</p>
+            </div>
+            <div class="onboarding-card">
+              <svg class="onboarding-card-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <h4>3. Preview PDF</h4>
+              <p>View the rendered form with overlay</p>
+            </div>
+          </div>
         </div>
-        <iframe id="preview-frame" class="preview-frame" style="display: none;" title="PDF Preview"></iframe>
+
+        <!-- Rendered Iframe -->
+        <div class="preview-frame-wrapper" id="preview-frame-wrapper">
+          <iframe id="preview-frame" class="preview-frame" title="PDF Preview"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Template Info Modal -->
+  <div id="template-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Template Information</h3>
+        <button type="button" id="modal-close-x" class="modal-close-btn" title="Close modal">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width: 18px; height: 18px;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="info-table">
+          <tbody>
+            <tr>
+              <td>Form ID</td>
+              <td id="modal-form-id">—</td>
+            </tr>
+            <tr>
+              <td>Title</td>
+              <td id="modal-form-title">—</td>
+            </tr>
+            <tr>
+              <td>Tax Year</td>
+              <td id="modal-tax-year">—</td>
+            </tr>
+            <tr>
+              <td>Revision</td>
+              <td id="modal-revision">—</td>
+            </tr>
+            <tr>
+              <td>Jurisdiction</td>
+              <td id="modal-jurisdiction">—</td>
+            </tr>
+            <tr>
+              <td>Page Count</td>
+              <td id="modal-page-count">—</td>
+            </tr>
+            <tr>
+              <td>Mapped Fields</td>
+              <td id="modal-annotation-count">—</td>
+            </tr>
+            <tr>
+              <td>IRS Source URL</td>
+              <td><a id="modal-source-url" href="#" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: none;">View Official PDF</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="modal-close-btn" class="btn-secondary" style="padding: 8px 16px; font-size: 13px;">Close</button>
       </div>
     </div>
   </div>
 
   <script>
+    // Elements
     const formSelect = document.getElementById("form-select");
     const fileUpload = document.getElementById("file-upload");
+    const dropzone = document.getElementById("dropzone");
+    const fileStatusText = document.getElementById("file-status-text");
     const datasetInput = document.getElementById("dataset-input");
     const debugCheck = document.getElementById("debug-check");
     const previewBtn = document.getElementById("preview-btn");
     const downloadBtn = document.getElementById("download-btn");
     const previewDownloadBtn = document.getElementById("preview-download-btn");
     const previewPlaceholder = document.getElementById("preview-placeholder");
+    const previewFrameWrapper = document.getElementById("preview-frame-wrapper");
     const previewFrame = document.getElementById("preview-frame");
     const errorBox = document.getElementById("error-box");
+    const statusBadge = document.getElementById("status-badge");
+    const statusBadgeText = document.getElementById("status-badge-text");
+
+    // Tabs
+    const tabBtns = document.querySelectorAll(".tab-btn");
+    const tabPanes = document.querySelectorAll(".tab-pane");
+
+    // Modal elements
+    const viewTemplateInfoBtn = document.getElementById("view-template-info-btn");
+    const templateModal = document.getElementById("template-modal");
+    const modalCloseX = document.getElementById("modal-close-x");
+    const modalCloseBtn = document.getElementById("modal-close-btn");
+
+    // Preview zoom controls
+    const zoomInBtn = document.getElementById("zoom-in-btn");
+    const zoomOutBtn = document.getElementById("zoom-out-btn");
+    const zoomFitBtn = document.getElementById("zoom-fit-btn");
+    const zoomLevelLabel = document.getElementById("zoom-level-label");
+    const fullscreenBtn = document.getElementById("fullscreen-btn");
+    const previewCard = document.getElementById("preview-card");
+
+    // Textarea actions
+    const formatJsonBtn = document.getElementById("format-json-btn");
+    const clearJsonBtn = document.getElementById("clear-json-btn");
 
     let currentPreviewUrl = null;
     let currentPreviewFilename = "form-filled.pdf";
+    let zoomLevel = 100;
+
+    // Tab switching
+    tabBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("data-tab");
+        tabBtns.forEach(b => b.classList.remove("active"));
+        tabPanes.forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        const targetPane = document.getElementById(targetId);
+        if (targetPane) targetPane.classList.add("active");
+      });
+    });
+
+    function showStatus(message) {
+      statusBadgeText.textContent = message;
+      statusBadge.style.display = "inline-flex";
+      setTimeout(() => {
+        statusBadge.style.display = "none";
+      }, 4000);
+    }
+
+    // Load example dataset helper
+    async function loadExample(filename, label) {
+      try {
+        const res = await fetch(`/api/examples/${filename}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const jsonStr = JSON.stringify(data, null, 2);
+        datasetInput.value = jsonStr;
+        fileStatusText.textContent = filename;
+        showStatus(`Loaded ${label || filename}`);
+      } catch (err) {
+        errorBox.textContent = `Failed to load example "${filename}": ` + err.message;
+        errorBox.style.display = "block";
+      }
+    }
+
+    // Sample pills in upload tab
+    document.querySelectorAll(".sample-pill").forEach(pill => {
+      pill.addEventListener("click", () => {
+        const file = pill.getAttribute("data-file");
+        const label = pill.textContent.trim();
+        document.querySelectorAll(".sample-pill").forEach(p => p.classList.remove("active"));
+        pill.classList.add("active");
+        loadExample(file, label);
+      });
+    });
+
+    // Example cards in examples tab
+    document.querySelectorAll(".example-card-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const file = btn.getAttribute("data-file");
+        loadExample(file, file);
+      });
+    });
+
+    // File upload & Dropzone
+    dropzone.addEventListener("click", () => fileUpload.click());
+
+    dropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropzone.classList.add("dragover");
+    });
+
+    dropzone.addEventListener("dragleave", () => {
+      dropzone.classList.remove("dragover");
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropzone.classList.remove("dragover");
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleSelectedFile(files[0]);
+      }
+    });
 
     fileUpload.addEventListener("change", (e) => {
-      const file = e.target.files[0];
+      if (e.target.files.length > 0) {
+        handleSelectedFile(e.target.files[0]);
+      }
+    });
+
+    function handleSelectedFile(file) {
       if (!file) return;
+      fileStatusText.textContent = `${file.name} (${Math.round(file.size / 1024)} KB)`;
       const reader = new FileReader();
       reader.onload = (event) => {
         datasetInput.value = event.target.result;
+        showStatus(`Loaded file: ${file.name}`);
       };
       reader.readAsText(file);
+    }
+
+    // JSON format & clear buttons
+    formatJsonBtn.addEventListener("click", () => {
+      const raw = datasetInput.value.trim();
+      if (!raw) return;
+      try {
+        const parsed = JSON.parse(raw);
+        datasetInput.value = JSON.stringify(parsed, null, 2);
+        showStatus("Formatted JSON");
+      } catch (err) {
+        errorBox.textContent = "JSON Formatting Error: " + err.message;
+        errorBox.style.display = "block";
+      }
     });
 
+    clearJsonBtn.addEventListener("click", () => {
+      datasetInput.value = "";
+      fileStatusText.textContent = "No file chosen";
+      document.querySelectorAll(".sample-pill").forEach(p => p.classList.remove("active"));
+    });
+
+    // Template Info Modal
+    viewTemplateInfoBtn.addEventListener("click", async () => {
+      const formId = formSelect.value;
+      try {
+        const res = await fetch(`/api/forms/${encodeURIComponent(formId)}/info`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const meta = await res.json();
+        document.getElementById("modal-form-id").textContent = meta.id || formId;
+        document.getElementById("modal-form-title").textContent = meta.title || "—";
+        document.getElementById("modal-tax-year").textContent = meta.taxYear || "—";
+        document.getElementById("modal-revision").textContent = meta.revision || "—";
+        document.getElementById("modal-jurisdiction").textContent = meta.jurisdiction || "—";
+        document.getElementById("modal-page-count").textContent = meta.pageCount ? `${meta.pageCount} page(s)` : "—";
+        document.getElementById("modal-annotation-count").textContent = meta.annotationCount ? `${meta.annotationCount} field annotations` : "—";
+        const link = document.getElementById("modal-source-url");
+        if (meta.sourceUrl) {
+          link.href = meta.sourceUrl;
+          link.style.display = "inline";
+        } else {
+          link.style.display = "none";
+        }
+        templateModal.classList.add("active");
+      } catch (err) {
+        errorBox.textContent = `Could not load template info for ${formId}: ` + err.message;
+        errorBox.style.display = "block";
+      }
+    });
+
+    function closeModal() {
+      templateModal.classList.remove("active");
+    }
+
+    modalCloseX.addEventListener("click", closeModal);
+    modalCloseBtn.addEventListener("click", closeModal);
+    templateModal.addEventListener("click", (e) => {
+      if (e.target === templateModal) closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && templateModal.classList.contains("active")) {
+        closeModal();
+      }
+    });
+
+    // Zoom Controls
+    function updateZoom(newZoom) {
+      zoomLevel = Math.max(50, Math.min(200, newZoom));
+      zoomLevelLabel.textContent = `${zoomLevel}%`;
+      if (previewFrame) {
+        previewFrame.style.transform = `scale(${zoomLevel / 100})`;
+        previewFrame.style.width = `${100 / (zoomLevel / 100)}%`;
+        previewFrame.style.height = `${100 / (zoomLevel / 100)}%`;
+      }
+    }
+
+    zoomInBtn.addEventListener("click", () => updateZoom(zoomLevel + 15));
+    zoomOutBtn.addEventListener("click", () => updateZoom(zoomLevel - 15));
+    zoomFitBtn.addEventListener("click", () => updateZoom(100));
+
+    fullscreenBtn.addEventListener("click", () => {
+      if (!document.fullscreenElement) {
+        previewCard.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    });
+
+    // Render / Preview API execution
     async function executeRender(action) {
       errorBox.style.display = "none";
       errorBox.textContent = "";
@@ -285,11 +1513,11 @@
 
       const isPreview = action === "preview";
       const activeBtn = isPreview ? previewBtn : downloadBtn;
-      const originalText = activeBtn.textContent;
+      const originalHTML = activeBtn.innerHTML;
 
       previewBtn.disabled = true;
       downloadBtn.disabled = true;
-      activeBtn.textContent = "Rendering...";
+      activeBtn.textContent = isPreview ? "Rendering..." : "Downloading...";
 
       try {
         const response = await fetch("/api/render", {
@@ -320,9 +1548,11 @@
             currentPreviewUrl = URL.createObjectURL(pdfBlob);
             currentPreviewFilename = filename;
             previewPlaceholder.style.display = "none";
+            previewFrameWrapper.style.display = "block";
             previewFrame.style.display = "block";
-            previewFrame.src = currentPreviewUrl;
-            previewDownloadBtn.style.display = "inline-block";
+            previewFrame.src = `${currentPreviewUrl}#navpanes=0&pagemode=none&view=FitH`;
+            previewDownloadBtn.style.display = "inline-flex";
+            updateZoom(100);
           } else {
             const downloadUrl = URL.createObjectURL(pdfBlob);
             const a = document.createElement("a");
@@ -340,7 +1570,7 @@
       } finally {
         previewBtn.disabled = false;
         downloadBtn.disabled = false;
-        activeBtn.textContent = originalText;
+        activeBtn.innerHTML = originalHTML;
       }
     }
 

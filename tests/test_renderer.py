@@ -50,3 +50,10 @@ def test_debug_mode_draws_more_than_normal_mode(f1040_path):
     aset = AnnotationSet.model_validate(MINIMAL)
     assert len(render(aset, DATA, f1040_path, debug=True)) > \
            len(render(aset, DATA, f1040_path))
+
+
+def test_render_sets_page_mode_use_none(f1040_path):
+    aset = AnnotationSet.model_validate(MINIMAL)
+    out = render(aset, DATA, f1040_path)
+    reader = PdfReader(io.BytesIO(out))
+    assert reader.trailer["/Root"].get("/PageMode") == "/UseNone"

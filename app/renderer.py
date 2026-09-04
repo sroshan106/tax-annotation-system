@@ -118,6 +118,7 @@ def render(aset: AnnotationSet, data: dict, pdf_path: Path, *, debug: bool = Fal
         writer.add_page(page)
         if i < len(overlay.pages):
             writer.pages[i].merge_page(overlay.pages[i])
+    writer.page_mode = "/UseNone"
     out = io.BytesIO()
     writer.write(out)
     return out.getvalue()

@@ -18,6 +18,15 @@ def test_index_has_two_column_layout_and_preview_controls(client):
     assert b'id="preview-btn"' in r.data
     assert b'id="download-btn"' in r.data
     assert b'id="preview-frame"' in r.data
+    assert b'id="dropzone"' in r.data
+    assert b'id="view-template-info-btn"' in r.data
+    assert b'id="zoom-in-btn"' in r.data
+    assert b'id="zoom-out-btn"' in r.data
+    assert b'id="fullscreen-btn"' in r.data
+    assert b"1. Configure Input" in r.data
+    assert b"2. PDF Preview" in r.data
+    assert b"Sample - Individual" in r.data
+    assert b"navpanes=0" in r.data
 
 def test_render_returns_a_pdf(client):
     data = json.loads(Path("examples/simple-w2.json").read_text())
@@ -53,4 +62,32 @@ def test_non_dict_json_returns_400(client):
     r_val = client.post("/api/validate", json=["not", "a", "dict"])
     assert r_val.status_code == 400
     assert r_val.get_json() == {"error": "invalid request: payload must be a JSON object"}
+
+
+def test_form_info_returns_metadata(client):
+    r = client.get("/api/forms/f1040/info")
+    assert r.status_code == 200
+    data = r.get_json()
+    assert data["id"] == "f1040"
+    assert "Form 1040" in data["title"]
+    assert data["taxYear"] == 2024
+    assert data["pageCount"] == 2
+    assert data["annotationCount"] > 0
+
+
+def test_form_info_unknown_form_is_404(client):
+    r = client.get("/api/forms/nonexistent/info")
+    assert r.status_code == 404
+
+
+def test_example_endpoint_returns_json(client):
+    r = client.get("/api/examples/simple-w2.json")
+    assert r.status_code == 200
+    data = r.get_json()
+    assert "taxpayer" in data
+
+
+def test_example_endpoint_unknown_is_404(client):
+    r = client.get("/api/examples/unknown.json")
+    assert r.status_code == 404
 

@@ -1,0 +1,17 @@
+{
+  "taxpayer": {
+    "nameShownOnReturn": "Dana R. Whitfield",
+    "ssn": "412-55-8290"
+  },
+  "interest": {
+    "statementNote": "See attached statement for the remaining payers",
+    "payers": [
+      { "name": "First Cedar Valley Savings Bank", "amount": 412.18 },
+      { "name": "Northaven Credit Union", "amount": 1180.44 },
+      { "name": "Meridian Brokerage LLC", "amount": 2295.07 }
+    ],
+    "totalInterest": 3887.69,
+    "excludableSavingsBondInterest": 0,
+    "taxableInterest": 3887.69
+  }
+}

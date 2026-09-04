@@ -7,7 +7,7 @@ from tests.pdf_probe import extract_placements
 SETS = {"annotations/f1040-2024.json": "forms/f1040.pdf",
         "annotations/f1040sb-2024.json": "forms/f1040sb.pdf"}
 EXAMPLES = ["examples/simple-w2.json", "examples/joint-dependents.json",
-            "examples/schedule-b-overflow.json"]
+            "examples/schedule-b-normal.json", "examples/schedule-b-overflow.json"]
 
 
 @pytest.mark.parametrize("set_path,pdf", SETS.items())
@@ -62,3 +62,10 @@ def test_schedule_b_example_overflows_its_group():
     grp = next(a for a in aset.annotations if isinstance(a, GroupAnnotation))
     data = json.loads(pathlib.Path("examples/schedule-b-overflow.json").read_text())
     assert len(data["interest"]["payers"]) > grp.maxRows
+
+
+def test_schedule_b_normal_does_not_overflow():
+    aset = load_set("annotations/f1040sb-2024.json")
+    grp = next(a for a in aset.annotations if isinstance(a, GroupAnnotation))
+    data = json.loads(pathlib.Path("examples/schedule-b-normal.json").read_text())
+    assert len(data["interest"]["payers"]) <= grp.maxRows
