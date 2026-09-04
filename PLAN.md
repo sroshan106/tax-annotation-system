@@ -105,7 +105,7 @@ instead/
 ### Task 0: Groundwork
 
 **Files:**
-- Create: `requirements.txt`, `forms/f1040.pdf`, `forms/f1040sb.pdf`, `tests/conftest.py`, `.gitignore`
+- Create: `requirements.txt`, `pytest.ini`, `forms/f1040.pdf`, `forms/f1040sb.pdf`, `tests/__init__.py`, `tests/conftest.py`, `.gitignore`
 - Test: `tests/test_forms.py`
 
 **Interfaces:**
@@ -123,7 +123,25 @@ jsonpath-ng==1.*
 pytest==8.*
 ```
 
-- [ ] **Step 2: Install and vendor the forms**
+- [ ] **Step 2: Write pytest.ini and make tests importable**
+
+Later tasks do `from tests.test_models import MINIMAL` and `from tests.pdf_probe import ...`.
+That requires both a `tests` package and the repo root on `sys.path`:
+
+`pytest.ini`:
+
+```ini
+[pytest]
+pythonpath = .
+testpaths = tests
+```
+
+```bash
+touch tests/__init__.py
+printf '.venv/\n__pycache__/\n*.pyc\n.superpowers/\n' > .gitignore
+```
+
+- [ ] **Step 3: Install and vendor the forms**
 
 ```bash
 python3 -m venv .venv && . .venv/bin/activate
@@ -136,7 +154,7 @@ sha256sum forms/*.pdf
 
 Record both digests — they go into the annotation sets in Tasks 8 and 10.
 
-- [ ] **Step 3: Write the failing test**
+- [ ] **Step 4: Write the failing test**
 
 `tests/conftest.py`:
 
@@ -173,15 +191,15 @@ def test_schedule_b_geometry_is_measured_not_assumed(f1040sb_path):
     assert len(r.pages) >= 1
 ```
 
-- [ ] **Step 4: Run and confirm both pass**
+- [ ] **Step 5: Run and confirm both pass**
 
 Run: `pytest tests/test_forms.py -v`
 Expected: PASS. If Schedule B is not 612×792, **update the assertion to the real value and note it in PLAN.md** — page size is per-page data in the model, not a constant.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
-git add requirements.txt forms tests .gitignore
+git add requirements.txt pytest.ini forms tests .gitignore
 git commit -m "chore: vendor IRS forms, pin deps, assert page geometry"
 ```
 
@@ -376,6 +394,8 @@ class GroupAnnotation(BaseModel):
     # ponytail: "continuation" (spill onto a second page) needs page cloning
     # the v1 renderer does not do. Cut, not reserved. SPEC.md §11.
     overflowStrategy: Literal["statement", "error"] = "statement"
+    # The id of a FieldAnnotation elsewhere in this set. That field is removed
+    # from the normal field pass and printed ONLY when this group overflows.
     overflowTarget: str | None = None
     condition: Condition | None = None
 
@@ -462,10 +482,11 @@ Add to `tests/test_models.py`:
 ```python
 def test_generated_schema_is_current():
     """Fails if someone edits models.py and forgets to regenerate."""
-    import json, pathlib, subprocess, sys
+    import os, pathlib, subprocess, sys
     p = pathlib.Path("schema/annotation-set.schema.json")
     before = p.read_text()
-    subprocess.run([sys.executable, "tools/gen_schema.py"], check=True)
+    subprocess.run([sys.executable, "tools/gen_schema.py"], check=True,
+                   env={**os.environ, "PYTHONPATH": "."})
     assert p.read_text() == before, "run: python tools/gen_schema.py"
 ```
 
@@ -1135,7 +1156,7 @@ from pypdf import PdfReader, PdfWriter
 from app.models import AnnotationSet, FieldAnnotation, GroupAnnotation, Style
 from app.geometry import to_pdf_rect, baseline_y, anchor_x
 from app.formatter import format_value, COMB_TYPES
-from app.resolver import resolve_one, evaluate
+from app.resolver import resolve_one, resolve_many, evaluate
 
 
 def _style(aset: AnnotationSet, ann: FieldAnnotation) -> Style:
@@ -1202,11 +1223,31 @@ def _draw_debug(c, ann_box, page_h: float, label: str):
     c.restoreState()
 
 
+def _overflow_targets(aset: AnnotationSet, data: dict) -> tuple[set[str], set[str]]:
+    """Which 'see attached statement' annotations exist, and which fired.
+
+    A field named by some group's overflowTarget is NOT part of the normal
+    field pass — it prints only when that group actually overflows. Deciding
+    this up front (instead of while drawing) keeps it correct when the group
+    and its target sit on different pages.
+    """
+    declared: set[str] = set()
+    fired: set[str] = set()
+    for g in aset.annotations:
+        if not isinstance(g, GroupAnnotation) or not g.overflowTarget:
+            continue
+        declared.add(g.overflowTarget)
+        if evaluate(g.condition, data) and len(resolve_many(g.source, data)) > g.maxRows:
+            fired.add(g.overflowTarget)
+    return declared, fired
+
+
 def render(aset: AnnotationSet, data: dict, pdf_path: Path, *, debug: bool = False) -> bytes:
     base = PdfReader(pdf_path)
     buf = io.BytesIO()
     c = canvas.Canvas(buf)
     by_page = {p.number: p for p in aset.pages}
+    declared, fired = _overflow_targets(aset, data)
 
     for pno in sorted(by_page):
         page = by_page[pno]
@@ -1215,6 +1256,8 @@ def render(aset: AnnotationSet, data: dict, pdf_path: Path, *, debug: bool = Fal
             if ann.page != pno:
                 continue
             if isinstance(ann, FieldAnnotation):
+                if ann.id in declared and ann.id not in fired:
+                    continue
                 _draw_field(c, aset, ann, data, page.height)
                 if debug:
                     _draw_debug(c, ann.box, page.height, ann.id)
@@ -1321,13 +1364,16 @@ def test_rows_beyond_maxrows_are_not_drawn(f1040_path):
     texts = " ".join(p["text"] for p in extract_placements(out))
     assert "Bank 1" in texts and "Bank 2" not in texts
 
-def test_statement_strategy_prints_the_overflow_target(f1040_path):
+def test_statement_target_prints_when_the_group_overflows(f1040_path):
     out = render(AnnotationSet.model_validate(group_doc(max_rows=2)), data(5), f1040_path)
     assert find(extract_placements(out), "See attached statement")
 
-def test_no_overflow_means_the_target_still_follows_its_own_value(f1040_path):
+def test_statement_target_is_suppressed_when_nothing_overflows(f1040_path):
+    """An overflowTarget is not an ordinary field: it must stay blank unless
+    its group actually spilled. Without this, the previous assertion passes
+    vacuously."""
     out = render(AnnotationSet.model_validate(group_doc(max_rows=9)), data(2), f1040_path)
-    assert find(extract_placements(out), "See attached statement")
+    assert not [p for p in extract_placements(out) if "attached statement" in p["text"]]
 
 def test_error_strategy_raises_rather_than_dropping_rows(f1040_path):
     doc = group_doc(max_rows=2, strategy="error", target=None)
