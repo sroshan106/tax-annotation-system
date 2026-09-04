@@ -33,11 +33,11 @@ def format_value(ann: FieldAnnotation, raw):
 
 def _money(v: Decimal, ann: FieldAnnotation) -> str:
     f = ann.format
-    if f.zeroSuppress and v == 0:
-        return ""
     places = 0 if f.wholeDollars else f.decimals
     q = Decimal(1).scaleb(-places)
     v = v.quantize(q, rounding=ROUND_HALF_EVEN)
+    if f.zeroSuppress and v == 0:
+        return ""
     neg = v < 0
     body = f"{abs(v):,.{places}f}" if f.thousandsSeparator else f"{abs(v):.{places}f}"
     if not neg:

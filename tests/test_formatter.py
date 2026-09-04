@@ -29,6 +29,18 @@ def test_none_always_renders_empty():
     assert format_value(ann("currency"), None) == ""
     assert format_value(ann("text"), None) == ""
 
+def test_currency_suppresses_subcent_value_that_rounds_to_zero():
+    assert format_value(ann("currency"), -0.004) == ""
+
+def test_currency_whole_dollars_suppresses_value_rounding_to_zero():
+    assert format_value(ann("currency", wholeDollars=True), 0.4) == ""
+
+def test_currency_at_two_decimals_still_prints_real_subdollar_amount():
+    assert format_value(ann("currency"), 0.4) == "0.40"
+
+def test_currency_zero_suppress_disabled_prints_zero_not_empty_for_rounds_to_zero():
+    assert format_value(ann("currency", zeroSuppress=False), -0.004) == "0.00"
+
 def test_ssn_comb_returns_nine_cells():
     cells = format_value(ann("ssn", cells=9), "123-45-6789")
     assert cells == list("123456789")
