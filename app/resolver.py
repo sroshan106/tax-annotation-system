@@ -1,9 +1,3 @@
-"""Resolution of the spec's JSONPath subset.
-
-Imports the BASE jsonpath_ng parser, never jsonpath_ng.ext. The base grammar
-has no filter or script expressions, so the portable subset the spec promises
-is enforced by construction rather than by a blocklist.
-"""
 from functools import lru_cache
 from jsonpath_ng import parse as _parse
 from app.models import Condition
@@ -18,7 +12,7 @@ class UnsupportedPathError(ValueError): ...
 def _compile(path: str):
     try:
         return _parse(path)
-    except Exception as exc:  # parser/lexer raise broadly
+    except Exception as exc:
         raise UnsupportedPathError(
             f"{path!r} is not in the supported JSONPath subset "
             f"(child, index, [*], .. only; filters are excluded): {exc}") from exc
@@ -45,16 +39,16 @@ def resolve_one(path: str, data, *, required: bool, annotation_id: str):
 def evaluate(cond: Condition | None, data) -> bool:
     if cond is None:
         return True
-    matches = resolve_many(cond.path, data)
-    present = [v for v in matches if v is not None]
+    present = [v for v in resolve_many(cond.path, data) if v is not None]
+    first = present[0] if present else None
     if cond.op == "exists":
         return bool(present)
     if cond.op == "absent":
         return not present
     if cond.op == "truthy":
-        return bool(present) and bool(present[0])
+        return bool(first)
     if cond.op == "equals":
-        return bool(present) and present[0] == cond.value
+        return bool(present) and first == cond.value
     if cond.op == "notEquals":
-        return not present or present[0] != cond.value
+        return not present or first != cond.value
     raise UnsupportedPathError(f"unknown condition op {cond.op!r}")

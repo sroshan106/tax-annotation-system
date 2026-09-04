@@ -1,4 +1,6 @@
+import io
 import pytest
+from pypdf import PdfReader
 from app.models import AnnotationSet
 from app.renderer import render
 from tests.pdf_probe import extract_placements, find
@@ -15,7 +17,6 @@ def test_value_lands_inside_its_declared_box(f1040_path):
     assert box.y <= p["y"] <= box.y + box.height
 
 def test_output_preserves_the_original_page_count(f1040_path):
-    from pypdf import PdfReader; import io
     out = render(AnnotationSet.model_validate(MINIMAL), DATA, f1040_path)
     assert len(PdfReader(io.BytesIO(out)).pages) == 2
 

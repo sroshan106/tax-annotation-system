@@ -16,7 +16,7 @@ def test_invalid_set_raises_with_the_offending_field(tmp_path):
         load_set(_write(tmp_path, bad))
 
 def test_sha_mismatch_warns_by_default(tmp_path, f1040_path):
-    aset = load_set(_write(tmp_path, MINIMAL))   # MINIMAL pins all-zero sha
+    aset = load_set(_write(tmp_path, MINIMAL))
     warnings = verify_source(aset, f1040_path, strict=False)
     assert any("sha256" in w for w in warnings)
 
@@ -26,5 +26,5 @@ def test_sha_mismatch_raises_under_strict(tmp_path, f1040_path):
         verify_source(aset, f1040_path, strict=True)
 
 def test_page_count_mismatch_warns(tmp_path, f1040sb_path):
-    aset = load_set(_write(tmp_path, MINIMAL))   # declares 2 pages
+    aset = load_set(_write(tmp_path, MINIMAL))
     assert any("page count" in w for w in verify_source(aset, f1040sb_path, strict=False))

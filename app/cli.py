@@ -1,4 +1,3 @@
-"""python -m app.cli annotations/f1040-2024.json examples/simple-w2.json -o out.pdf"""
 import argparse, json
 from pathlib import Path
 from app.loader import load_set, verify_source
@@ -16,12 +15,9 @@ def main(argv=None):
     a = p.parse_args(argv)
 
     aset = load_set(a.annotation_set)
-    try:
-        pdf_path = next(
-            pdf for s, pdf in FORMS.values()
-            if s == Path(a.annotation_set) or Path(s).resolve() == Path(a.annotation_set).resolve()
-        )
-    except StopIteration:
+    target = Path(a.annotation_set).resolve()
+    pdf_path = next((pdf for s, pdf in FORMS.values() if Path(s).resolve() == target), None)
+    if not pdf_path:
         raise SystemExit(f"No registered form matching annotation set {a.annotation_set!r}")
 
     for w in verify_source(aset, pdf_path, strict=a.strict):

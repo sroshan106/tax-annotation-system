@@ -1,21 +1,13 @@
-"""AcroForm widget rects -> a draft annotation set.
-
-The IRS ships the box geometry inside the PDF. Extract it, then a human names
-each annotation and assigns its JSONPath. Draft output is a starting point,
-not a deliverable: it is filtered down to the representative subset by hand.
-"""
 import hashlib, json, re, sys
 from pathlib import Path
 from pypdf import PdfReader
 from pypdf.generic import IndirectObject
 
-_MAX_PARENT_DEPTH = 64  # ponytail: bound against a malformed/cyclic /Parent chain
+_MAX_PARENT_DEPTH = 64
 
 
 def infer_type(field_name: str, ft: str) -> str:
-    if ft == "/Btn":
-        return "checkbox"
-    return "text"
+    return "checkbox" if ft == "/Btn" else "text"
 
 
 def _slug(name: str, n: int) -> str:
@@ -38,8 +30,7 @@ def extract(pdf_path: Path, form_id: str, tax_year: int) -> dict:
             w = _resolve(ref)
             if w.get("/Subtype") != "/Widget":
                 continue
-            fld = w
-            depth = 0
+            fld, depth = w, 0
             while fld is not None and "/T" not in fld and depth < _MAX_PARENT_DEPTH:
                 fld = _resolve(fld.get("/Parent"))
                 depth += 1
@@ -53,7 +44,6 @@ def extract(pdf_path: Path, form_id: str, tax_year: int) -> dict:
                 "id": _slug(name, n),
                 "label": name,
                 "page": pno,
-                # PDF bottom-left -> spec top-left, the inverse of geometry.to_pdf_rect
                 "box": {"x": round(min(x0, x1), 2),
                         "y": round(page_h - max(y0, y1), 2),
                         "width": round(abs(x1 - x0), 2),

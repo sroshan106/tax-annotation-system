@@ -16,13 +16,13 @@ def test_shipped_sets_validate_and_match_their_pdf(set_path, pdf):
     assert verify_source(aset, pathlib.Path(pdf), strict=False) == []
 
 
-@pytest.mark.parametrize("set_path,pdf", SETS.items())
-def test_no_placeholder_paths_survive(set_path, pdf):
+@pytest.mark.parametrize("set_path", SETS)
+def test_no_placeholder_paths_survive(set_path):
     assert "TODO" not in pathlib.Path(set_path).read_text()
 
 
-@pytest.mark.parametrize("set_path,pdf", SETS.items())
-def test_every_box_sits_on_its_page(set_path, pdf):
+@pytest.mark.parametrize("set_path", SETS)
+def test_every_box_sits_on_its_page(set_path):
     aset = load_set(set_path)
     pages = {p.number: p for p in aset.pages}
     for a in aset.annotations:
@@ -38,7 +38,6 @@ def test_every_box_sits_on_its_page(set_path, pdf):
                 assert 0 <= c.box.y and c.box.y + c.box.height <= pg.height, f"{a.id}.{c.id}"
 
 
-
 def test_the_1040_set_covers_every_declared_field_type():
     aset = load_set("annotations/f1040-2024.json")
     seen = {a.type for a in aset.annotations if isinstance(a, FieldAnnotation)}
@@ -49,7 +48,7 @@ def test_the_1040_set_covers_every_declared_field_type():
 
 
 @pytest.mark.parametrize("example", EXAMPLES)
-def test_every_example_renders_without_error(example, f1040_path):
+def test_every_example_renders_without_error(example):
     data = json.loads(pathlib.Path(example).read_text())
     target = "annotations/f1040sb-2024.json" if "schedule-b" in example \
              else "annotations/f1040-2024.json"

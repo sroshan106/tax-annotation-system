@@ -1,11 +1,6 @@
-"""The ONLY place the spec's top-left coordinate system meets PDF user space.
-
-Spec:  origin top-left, y grows down, unit = 1/72 inch.
-PDF:   origin bottom-left, y grows up, same unit.
-"""
 from app.models import Box, Style
 
-CAP_HEIGHT_RATIO = 0.72  # pinned by the spec so two renderers agree
+CAP_HEIGHT_RATIO = 0.72
 
 
 def to_pdf_rect(box: Box, page_height: float) -> tuple[float, float, float, float]:

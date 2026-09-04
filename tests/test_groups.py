@@ -48,9 +48,6 @@ def test_statement_target_prints_when_the_group_overflows(f1040_path):
     assert find(extract_placements(out), "See attached statement")
 
 def test_statement_target_is_suppressed_when_nothing_overflows(f1040_path):
-    """An overflowTarget is not an ordinary field: it must stay blank unless
-    its group actually spilled. Without this, the previous assertion passes
-    vacuously."""
     out = render(AnnotationSet.model_validate(group_doc(max_rows=9)), data(2), f1040_path)
     assert not [p for p in extract_placements(out) if "attached statement" in p["text"]]
 

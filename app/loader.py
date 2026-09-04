@@ -12,8 +12,6 @@ def load_set(path: str | Path) -> AnnotationSet:
 
 
 def verify_source(aset: AnnotationSet, pdf_path: Path, *, strict: bool) -> list[str]:
-    """The IRS reissues PDFs at the same URL, so a digest mismatch is a warning
-    by default and an error only under --strict."""
     problems: list[str] = []
     digest = hashlib.sha256(Path(pdf_path).read_bytes()).hexdigest()
     if digest != aset.source.sha256:

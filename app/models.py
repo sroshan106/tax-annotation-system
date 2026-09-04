@@ -9,8 +9,6 @@ BASE14 = {"Helvetica", "Helvetica-Bold", "Helvetica-Oblique", "Helvetica-BoldObl
 
 FieldType = Literal["text", "currency", "integer", "decimal",
                     "date", "ssn", "ein", "phone", "zip", "checkbox", "comb"]
-# ponytail: no "multiline" — nothing in the v1 sets wraps, and a wrap engine
-# with no caller is a spec promise no third party could verify. See SPEC.md §11.
 
 
 class Box(BaseModel):
@@ -29,8 +27,6 @@ class Style(BaseModel):
     align: Literal["left", "center", "right"] = "left"
     valign: Literal["top", "middle", "bottom"] = "middle"
     padding: float = 1.5
-    # ponytail: no letterSpacing (comb already owns character pitch) and no
-    # rotation (no box in the v1 sets is rotated). Both in SPEC.md §11.
 
     @model_validator(mode="after")
     def _base14_or_fallback(self):
@@ -63,7 +59,7 @@ class Format(BaseModel):
     zeroSuppress: bool = True
     wholeDollars: bool = False
     datePattern: str = "%m/%d/%Y"
-    cells: int | None = None          # comb: number of character cells
+    cells: int | None = None
     checkedGlyph: str = "X"
     trueValues: list[object] = Field(default_factory=lambda: [True, "true", "Y", "yes", 1])
 
@@ -75,14 +71,11 @@ class FieldAnnotation(BaseModel):
     page: int
     box: Box
     type: FieldType
-    value: str                        # JSONPath, relative to the row inside a group
-    acroFieldName: str | None = None  # hint only; coordinates win on conflict
+    value: str
+    acroFieldName: str | None = None
     required: bool = False
     format: Format = Field(default_factory=Format)
     style: Style = Field(default_factory=Style)
-    # ponytail: shrink | clip | error only. "wrap" and "truncate" had no
-    # implementation and no test, so they were cut rather than shipped as
-    # enum values a conforming renderer could not actually rely on.
     overflow: Literal["shrink", "clip", "error"] = "shrink"
     minSize: float = 5.0
     condition: Condition | None = None
@@ -99,16 +92,12 @@ class GroupAnnotation(BaseModel):
     id: str
     label: str
     page: int
-    source: str                       # JSONPath to an array
+    source: str
     rowHeight: float
     maxRows: int
     firstRowBox: Box
     columns: list[FieldAnnotation]
-    # ponytail: "continuation" (spill onto a second page) needs page cloning
-    # the v1 renderer does not do. Cut, not reserved. SPEC.md §11.
     overflowStrategy: Literal["statement", "error"] = "statement"
-    # The id of a FieldAnnotation elsewhere in this set. That field is removed
-    # from the normal field pass and printed ONLY when this group overflows.
     overflowTarget: str | None = None
     condition: Condition | None = None
 
@@ -165,13 +154,7 @@ class AnnotationSet(BaseModel):
                 if a.overflowStrategy == "statement" and not a.overflowTarget:
                     raise ValueError(
                         f"{a.id}: overflowStrategy 'statement' requires overflowTarget")
-        # Second pass: overflowTarget must name a top-level FieldAnnotation
-        # (the renderer's overflow pass never visits group columns), and a
-        # group may be declared before its target, so this can't be checked
-        # in the loop above.
-        for a in self.annotations:
-            if isinstance(a, GroupAnnotation) and a.overflowTarget is not None:
-                if a.overflowTarget not in top_level_field_ids:
+                if a.overflowTarget and a.overflowTarget not in top_level_field_ids:
                     raise ValueError(
                         f"{a.id}: overflowTarget {a.overflowTarget!r} does not "
                         "name a top-level field annotation")

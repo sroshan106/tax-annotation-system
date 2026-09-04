@@ -1,3 +1,7 @@
+import os
+import pathlib
+import subprocess
+import sys
 import pytest
 from pydantic import ValidationError
 from app.models import AnnotationSet, FieldAnnotation, Box
@@ -68,10 +72,8 @@ def test_ids_must_be_unique():
         AnnotationSet.model_validate(doc)
 
 def test_generated_schema_is_current():
-    """Fails if someone edits models.py and forgets to regenerate."""
-    import os, pathlib, subprocess, sys
     p = pathlib.Path("schema/annotation-set.schema.json")
     before = p.read_text()
     subprocess.run([sys.executable, "tools/gen_schema.py"], check=True,
                    env={**os.environ, "PYTHONPATH": "."})
-    assert p.read_text() == before, "run: python tools/gen_schema.py"
+    assert p.read_text() == before

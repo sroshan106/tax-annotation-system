@@ -1,5 +1,3 @@
-"""Regenerate schema/annotation-set.schema.json from the pydantic models.
-The models are canonical; this file is build output. Never hand-edit it."""
 import json, pathlib
 from app.models import AnnotationSet
 
