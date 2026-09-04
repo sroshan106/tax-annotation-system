@@ -31,13 +31,95 @@ A box on `f1040-2024.json` with `x: 40`, `y: 96`, `width: 200`, `height: 14` on 
 PDF `y_bottom` = `792 - 96 - 14 = 682`.
 
 ## 4. Document Structure
-An `AnnotationSet` consists of:
-- `specVersion`: `"1.0"`
-- `form`: Form metadata (`id`, `title`, `taxYear`, `revision`, `jurisdiction`).
-- `source`: PDF source metadata (`url`, `sha256`, `pageCount`).
-- `pages`: List of pages with their measured `width` and `height`.
-- `defaults`: Default styling.
-- `annotations`: A flat list of annotations, discriminated by `kind: "field" | "group"`.
+An `AnnotationSet` defines the canonical schema, composed of the following nested structures (matching `app/models.py`):
+
+### `AnnotationSet` (Root)
+- `specVersion` (`Literal["1.0"]`): Fixed spec version.
+- `form` (`FormMeta`): Metadata about the form.
+- `source` (`SourceMeta`): PDF source metadata.
+- `pages` (`list[PageMeta]`): Array of page geometries.
+- `defaults` (`Style`, optional): Default styling applied across annotations.
+- `annotations` (`list[Annotation]`): A flat list of `FieldAnnotation` and `GroupAnnotation` items.
+
+### `FormMeta`
+- `id` (`str`): Form identifier (e.g. `"f1040"`).
+- `title` (`str`): Human-readable form title.
+- `taxYear` (`int`): Year the form corresponds to.
+- `revision` (`str`): Revision date/string.
+- `jurisdiction` (`str`, default: `"US-IRS"`): Governing tax body.
+
+### `SourceMeta`
+- `url` (`str`): Public URL to the original PDF.
+- `sha256` (`str`): SHA-256 hash of the PDF file (pattern: `^[0-9a-f]{64}$`).
+- `pageCount` (`int`): Expected number of pages in the PDF.
+
+### `PageMeta`
+- `number` (`int`): 1-indexed page number.
+- `width` (`float`): Page width in points.
+- `height` (`float`): Page height in points.
+
+### `Box`
+Top-left origin, `y` grows down, units are PDF points.
+- `x` (`float`): X-coordinate of top-left corner.
+- `y` (`float`): Y-coordinate of top-left corner.
+- `width` (`float`): Width of the box.
+- `height` (`float`): Height of the box.
+
+### `Style`
+- `font` (`str`, default `"Helvetica"`): Name of the font.
+- `fontFallback` (`str | None`): Required base-14 fallback if `font` is not base-14.
+- `size` (`float`, default `9.0`): Font size in points.
+- `color` (`str`, default `"#000000"`): Hex color code.
+- `align` (`Literal["left", "center", "right"]`, default `"left"`): Horizontal alignment.
+- `valign` (`Literal["top", "middle", "bottom"]`, default `"middle"`): Vertical alignment.
+- `padding` (`float`, default `1.5`): Inset padding in points.
+
+### `Condition`
+- `path` (`str`): JSONPath expression to evaluate.
+- `op` (`Literal["exists", "absent", "truthy", "equals", "notEquals"]`, default `"truthy"`): Comparison operator.
+- `value` (`object | None`): Target value; required for `"equals"` and `"notEquals"`.
+
+### `Format`
+- `decimals` (`int`, default `2`): Number of decimal places.
+- `thousandsSeparator` (`bool`, default `True`): Whether to use a comma separator.
+- `negative` (`Literal["parentheses", "minus"]`, default `"parentheses"`): Negative number style.
+- `zeroSuppress` (`bool`, default `True`): Whether to hide zero or rounded-to-zero values.
+- `wholeDollars` (`bool`, default `False`): Whether to round to the nearest whole dollar.
+- `datePattern` (`str`, default `"%m/%d/%Y"`): strftime format string.
+- `cells` (`int | None`): Number of character cells for `"comb"` fields.
+- `checkedGlyph` (`str`, default `"X"`): Character printed if a checkbox is checked.
+- `trueValues` (`list[object]`, default `[True, "true", "Y", "yes", 1]`): Values treated as checked.
+
+### `FieldAnnotation`
+- `kind` (`Literal["field"]`, default `"field"`): Discriminator.
+- `id` (`str`): Unique identifier.
+- `label` (`str`): Human-readable field label.
+- `page` (`int`): Target page number.
+- `box` (`Box`): Coordinate geometry.
+- `type` (`FieldType`): One of `text`, `currency`, `integer`, `decimal`, `date`, `ssn`, `ein`, `phone`, `zip`, `checkbox`, `comb`.
+- `value` (`str`): JSONPath expression referencing data.
+- `acroFieldName` (`str | None`): Optional original PDF field name hint.
+- `required` (`bool`, default `False`): Whether missing data raises an error.
+- `format` (`Format`, default `Format()`): Field-specific formatting rules.
+- `style` (`Style`, default `Style()`): Field-specific styling.
+- `overflow` (`Literal["shrink", "clip", "error"]`, default `"shrink"`): Handling for text that exceeds box bounds.
+- `minSize` (`float`, default `5.0`): Minimum font size when shrinking.
+- `condition` (`Condition | None`): Optional conditional logic to render the field.
+
+### `GroupAnnotation`
+- `kind` (`Literal["group"]`): Discriminator.
+- `id` (`str`): Unique identifier.
+- `label` (`str`): Human-readable label.
+- `page` (`int`): Target page number.
+- `source` (`str`): JSONPath expression to an array of objects.
+- `rowHeight` (`float`): Vertical distance between rows.
+- `maxRows` (`int`): Maximum number of rows to print.
+- `firstRowBox` (`Box`): Bounding box of the entire first row.
+- `columns` (`list[FieldAnnotation]`): Fields to render per row.
+- `overflowStrategy` (`Literal["statement", "error"]`, default `"statement"`): Action when row count exceeds `maxRows`.
+- `overflowTarget` (`str | None`): ID of a top-level `FieldAnnotation` to print "See Attached" into (required for `"statement"` strategy).
+- `condition` (`Condition | None`): Optional conditional logic to render the group.
+
 
 ## 5. Referencing Values
 Data is referenced using a strict subset of JSONPath.
@@ -53,13 +135,81 @@ Data is referenced using a strict subset of JSONPath.
 - Group array paths resolve matches in document order.
 
 ## 6. Types and Formatting
-- `text`, `integer`, `decimal`, `ssn`, `ein`, `phone`, `zip`: standard text formatting.
-- `date`: Uses `datePattern`. (e.g., `fiscal_year_begin_date` as `f1_01` on p1).
-- `checkbox`: Uses `checkedGlyph` (e.g., `"X"`) if value matches `trueValues`.
-- `comb`: Splits string into `format.cells`.
-- `currency`: Supports `thousandsSeparator`, `decimals`, `negative` convention, `zeroSuppress`, and `wholeDollars`.
-  - *Zero suppression* is "suppress if the ROUNDED value is zero". (e.g., 0.4 prints "0.40" at `decimals=2`, but blank under `wholeDollars: true`).
-  - *Split dollars/cents* convention is mapped as two separate annotations. (e.g., line 1a wages split at 52pt / 20pt on `f1_47`).
+
+The `type` field dictates how extracted values are formatted before rendering. Below is exactly how each `FieldType` is formatted.
+
+### `text`
+Simple string passthrough.
+- **Input Example**: `{"value": "Ada Lovelace"}`
+- **Rendered Output**: `"Ada Lovelace"`
+
+### `integer`
+Formats numeric values as whole numbers.
+- **Input Example**: `{"value": 42}`
+- **Rendered Output**: `"42"`
+
+### `decimal`
+Formats numeric values as decimals (passthrough of float value).
+- **Input Example**: `{"value": 42.5}`
+- **Rendered Output**: `"42.5"`
+
+### `date`
+Parses ISO 8601 strings and formats them using `format.datePattern`.
+- **Input Example**: `{"value": "2025-04-15"}` (with `datePattern: "%m/%d/%Y"`)
+- **Rendered Output**: `"04/15/2025"`
+
+### `checkbox`
+Prints `format.checkedGlyph` if the value matches any item in `format.trueValues`.
+- **Input Example**: `{"value": true}` (with `checkedGlyph: "X"`)
+- **Rendered Output**: `"X"`
+
+### `currency`
+Highly configurable numeric formatting supporting decimals, thousands separators, zero suppression, and whole dollar rounding.
+- **Thousands Separators**: 
+  - Input: `{"value": 52000.0}`
+  - Output: `"52,000.00"`
+- **Decimals**:
+  - Input: `{"value": 1234.567}` (with `decimals: 2`)
+  - Output: `"1,234.57"`
+- **Negative with Parentheses**:
+  - Input: `{"value": -1234.5}` (with `negative: "parentheses"`)
+  - Output: `"(1,234.50)"`
+- **Negative with Minus**:
+  - Input: `{"value": -12.0}` (with `negative: "minus"`)
+  - Output: `"-12.00"`
+- **Zero Suppression (Default behavior)**:
+  - Input: `{"value": 0}`
+  - Output: `""` (Empty string)
+- **Zero Suppression (Rounds to zero)**:
+  - Input: `{"value": 0.4}` (with `wholeDollars: true`)
+  - Output: `""` (Empty string, suppressed because the ROUNDED value is zero)
+- **Split Dollars/Cents Convention**:
+  - Instead of a single formatted value, split dollars and cents are authored as two separate annotations. For `1234.56`, one annotation extracts and formats the dollars (`"1,234"`) and a second annotation handles the cents (`"56"`).
+
+### `comb`
+Splits a string into a list of individual character cells, discarding non-alphanumeric formatting characters (like hyphens), padding missing cells with empty strings, and raising an error if it exceeds `format.cells`.
+- **Input Example**: `{"value": "123"}` (with `cells: 5`)
+- **Rendered Output**: `["1", "2", "3", "", ""]`
+
+### `ssn`
+A specialized form of `comb` typically expecting 9 digits. Strips hyphens.
+- **Input Example**: `{"value": "123-45-6789"}` (with `cells: 9`)
+- **Rendered Output**: `["1", "2", "3", "4", "5", "6", "7", "8", "9"]`
+
+### `ein`
+Similar to `ssn`, specialized for Employer Identification Numbers.
+- **Input Example**: `{"value": "12-3456789"}` (with `cells: 9`)
+- **Rendered Output**: `["1", "2", "3", "4", "5", "6", "7", "8", "9"]`
+
+### `phone`
+Similar to `comb`, specialized for phone numbers.
+- **Input Example**: `{"value": "555-1234"}` (with `cells: 7`)
+- **Rendered Output**: `["5", "5", "5", "1", "2", "3", "4"]`
+
+### `zip`
+Similar to `comb`, specialized for Zip codes.
+- **Input Example**: `{"value": "021"}` (with `cells: 5`)
+- **Rendered Output**: `["0", "2", "1", "", ""]`
 
 ## 7. Repeating Groups
 - **Row geometry**: Driven by `firstRowBox` and `rowHeight`. Column `box.y` values are cosmetic; the renderer sets `y = firstRowBox.y + n * rowHeight`.
