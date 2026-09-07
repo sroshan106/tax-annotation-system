@@ -264,6 +264,21 @@
           "default": null,
           "title": "Cells"
         },
+        "segmentWidths": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Segmentwidths"
+        },
         "checkedGlyph": {
           "default": "X",
           "title": "Checkedglyph",

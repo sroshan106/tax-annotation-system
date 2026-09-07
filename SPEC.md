@@ -87,6 +87,7 @@ Top-left origin, `y` grows down, units are PDF points.
 - `wholeDollars` (`bool`, default `False`): Whether to round to the nearest whole dollar.
 - `datePattern` (`str`, default `"%m/%d/%Y"`): strftime format string.
 - `cells` (`int | None`): Number of character cells for `"comb"` fields.
+- `segmentWidths` (`list[float] | None`): Optional widths for segmented comb boxes (e.g. `[31.7, 21.7, 53.6]` for SSN 3-2-4 compartments), ensuring glyphs clear visual form divider lines.
 - `checkedGlyph` (`str`, default `"X"`): Character printed if a checkbox is checked.
 - `trueValues` (`list[object]`, default `[True, "true", "Y", "yes", 1]`): Values treated as checked.
 
@@ -201,7 +202,7 @@ Splits a string into a list of individual character cells, discarding non-alphan
 - **Rendered Output**: `["1", "2", "3", "", ""]`
 
 ### `ssn`
-A specialized form of `comb` typically expecting 9 digits. Strips hyphens.
+A specialized form of `comb` typically expecting 9 digits (partitioned into 3, 2, and 4 digits). Strips hyphens. When `format.segmentWidths` is declared, characters are positioned within each physical compartment, clearing printed form tick marks.
 - **Input Example**: `{"value": "123-45-6789"}` (with `cells: 9`)
 - **Rendered Output**: `["1", "2", "3", "4", "5", "6", "7", "8", "9"]`
 

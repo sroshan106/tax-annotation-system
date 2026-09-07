@@ -11,7 +11,7 @@ FieldType = Literal["text", "currency", "integer", "decimal",
                     "date", "ssn", "ein", "phone", "zip", "checkbox", "comb"]
 
 MONEY_KEYS = {"decimals", "thousandsSeparator", "negative", "zeroSuppress", "wholeDollars"}
-COMB_KEYS = {"cells"}
+COMB_KEYS = {"cells", "segmentWidths"}
 CHECKBOX_KEYS = {"checkedGlyph", "trueValues"}
 
 #: Which `format` keys the formatter actually reads for each field type.
@@ -85,6 +85,7 @@ class Format(BaseModel):
     wholeDollars: bool = False
     datePattern: str = "%m/%d/%Y"
     cells: int | None = None
+    segmentWidths: list[float] | None = None
     checkedGlyph: str = "X"
     trueValues: list[object] = Field(default_factory=lambda: [True, "true", "Y", "yes", 1])
 
@@ -126,12 +127,30 @@ class FieldAnnotation(Printable):
     page: int
     box: Box
 
+    @model_validator(mode="after")
+    def _segment_widths_match_box(self):
+        if self.format.segmentWidths:
+            total = sum(self.format.segmentWidths)
+            if abs(total - self.box.width) > 0.5:
+                raise ValueError(
+                    f"{self.id}: sum of segmentWidths ({total}) must match box width ({self.box.width})")
+        return self
+
 
 class GroupColumn(Printable):
     """A column only declares its horizontal extent: the vertical position of
     every cell comes from the group's firstRowY and rowHeight."""
     x: float
     width: float
+
+    @model_validator(mode="after")
+    def _segment_widths_match_col(self):
+        if self.format.segmentWidths:
+            total = sum(self.format.segmentWidths)
+            if abs(total - self.width) > 0.5:
+                raise ValueError(
+                    f"{self.id}: sum of segmentWidths ({total}) must match column width ({self.width})")
+        return self
 
     def as_field(self, *, id: str, page: int, box: Box) -> FieldAnnotation:
         kept = self.model_dump(exclude_unset=True, exclude={"id", "x", "width"})

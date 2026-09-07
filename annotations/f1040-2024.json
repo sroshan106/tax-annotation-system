@@ -121,7 +121,8 @@
       "acroFieldName": "topmostSubform[0].Page1[0].f1_16[0]",
       "required": true,
       "format": {
-        "cells": 9
+        "cells": 9,
+        "segmentWidths": [31.7, 21.7, 53.6]
       },
       "style": {
         "font": "Courier",
@@ -177,7 +178,8 @@
       "value": "$.spouse.ssn",
       "acroFieldName": "topmostSubform[0].Page1[0].f1_19[0]",
       "format": {
-        "cells": 9
+        "cells": 9,
+        "segmentWidths": [31.7, 21.7, 53.6]
       },
       "style": {
         "font": "Courier",
@@ -504,7 +506,8 @@
           "value": "$.ssn",
           "acroFieldName": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_33[0]",
           "format": {
-            "cells": 9
+            "cells": 9,
+            "segmentWidths": [35.3, 24.3, 46.65]
           },
           "style": {
             "font": "Courier",

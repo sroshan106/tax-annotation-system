@@ -57,3 +57,29 @@ def test_render_sets_page_mode_use_none(f1040_path):
     out = render(aset, DATA, f1040_path)
     reader = PdfReader(io.BytesIO(out))
     assert reader.trailer["/Root"].get("/PageMode") == "/UseNone"
+
+
+def test_ssn_digits_clear_form_divider_lines(f1040_path):
+    """Divider lines on Form 1040 are at x=500.7 and x=522.4.
+    Digits must sit in their compartments without colliding with dividers."""
+    doc = {**MINIMAL, "annotations": [{
+        "kind": "field", "id": "taxpayer_ssn", "label": "SSN", "page": 1,
+        "box": {"x": 469.0, "y": 94.0, "width": 107.0, "height": 14.0},
+        "type": "ssn", "value": "$.taxpayer.ssn",
+        "format": {"cells": 9, "segmentWidths": [31.7, 21.7, 53.6]},
+        "style": {"font": "Courier", "size": 8.0}
+    }]}
+    out = render(AnnotationSet.model_validate(doc),
+                 {"taxpayer": {"ssn": "412-55-8290"}}, f1040_path)
+    digits = [p for p in extract_placements(out)
+              if p["size"] == 8.0 and 469 <= p["x"] <= 576]
+    # Digits: 4, 1, 2 (seg 1), 5, 5 (seg 2), 8, 2, 9, 0 (seg 3)
+    assert len(digits) == 9
+    # 3rd digit (char '2') must sit to the left of divider 1 (500.7)
+    assert digits[2]["x"] + 4.8 < 500.7
+    # 4th digit (char '5') must sit to the right of divider 1 (500.7)
+    assert digits[3]["x"] > 500.7
+    # 5th digit (char '5') must sit to the left of divider 2 (522.4)
+    assert digits[4]["x"] + 4.8 < 522.4
+    # 6th digit (char '8') must sit to the right of divider 2 (522.4)
+    assert digits[5]["x"] > 522.4

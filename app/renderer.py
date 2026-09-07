@@ -38,6 +38,42 @@ def _fit(text: str, ann: FieldAnnotation, s: Style) -> float:
     return max(size, ann.minSize)
 
 
+def _cell_rects(ann: FieldAnnotation, count: int) -> list[tuple[float, float]]:
+    f = ann.format
+    if f.segmentWidths:
+        # Segmented comb: partition cells across segment widths (e.g. SSN 3-2-4, EIN 2-7).
+        if ann.type == "ssn" and len(f.segmentWidths) == 3:
+            counts = [3, 2, 4]
+        elif ann.type == "ein" and len(f.segmentWidths) == 2:
+            counts = [2, 7]
+        else:
+            base = count // len(f.segmentWidths)
+            counts = [base] * len(f.segmentWidths)
+        rects = []
+        cur_x = ann.box.x
+        for seg_cells, seg_w in zip(counts, f.segmentWidths):
+            pitch = seg_w / seg_cells
+            for i in range(seg_cells):
+                rects.append((cur_x + pitch * i, pitch))
+            cur_x += seg_w
+        return rects
+    if ann.type == "ssn" and count == 9:
+        # Default Form 1040 SSN 3-2-4 compartment proportions (31.7, 21.7, 53.6 of 107pt).
+        w1 = ann.box.width * (31.7 / 107.0)
+        w2 = ann.box.width * (21.7 / 107.0)
+        w3 = ann.box.width - w1 - w2
+        rects = []
+        cur_x = ann.box.x
+        for seg_cells, seg_w in zip([3, 2, 4], [w1, w2, w3]):
+            pitch = seg_w / seg_cells
+            for i in range(seg_cells):
+                rects.append((cur_x + pitch * i, pitch))
+            cur_x += seg_w
+        return rects
+    pitch = ann.box.width / count
+    return [(ann.box.x + pitch * i, pitch) for i in range(count)]
+
+
 def _draw_field(c, aset, ann: FieldAnnotation, data, page_h: float):
     if not evaluate(ann.condition, data):
         return
@@ -52,13 +88,13 @@ def _draw_field(c, aset, ann: FieldAnnotation, data, page_h: float):
     c.setFillColor(s.color)
     if isinstance(out, list):
         cells = ann.format.cells or len(out)
-        pitch = ann.box.width / cells
         c.setFont(font, s.size)
         y = baseline_y(ann.box, page_h, s)
+        rects = _cell_rects(ann, cells)
         for i, ch in enumerate(out):
-            if ch:
-                cx = ann.box.x + pitch * i + (pitch - stringWidth(ch, font, s.size)) / 2
-                c.drawString(cx, y, ch)
+            if ch and i < len(rects):
+                cx, cell_w = rects[i]
+                c.drawString(cx + (cell_w - stringWidth(ch, font, s.size)) / 2, y, ch)
     else:
         size = _fit(out, ann, s)
         s2 = s.model_copy(update={"size": size})
