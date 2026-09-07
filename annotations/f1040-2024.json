@@ -25,12 +25,14 @@
     }
   ],
   "defaults": {
-    "font": "Helvetica",
-    "size": 9.0,
-    "color": "#000000",
-    "align": "left",
-    "valign": "middle",
-    "padding": 1.5
+    "style": {
+      "font": "Helvetica",
+      "size": 9.0,
+      "color": "#000000",
+      "align": "left",
+      "valign": "middle",
+      "padding": 1.5
+    }
   },
   "annotations": [
     {
@@ -463,25 +465,13 @@
       "source": "$.dependents[*]",
       "rowHeight": 12.0,
       "maxRows": 4,
-      "firstRowBox": {
-        "x": 145.0,
-        "y": 309.0,
-        "width": 431.0,
-        "height": 12.0
-      },
-      "overflowStrategy": "error",
+      "firstRowY": 309.0,
       "columns": [
         {
-          "kind": "field",
           "id": "dependent_first_name",
           "label": "(1) First name",
-          "page": 1,
-          "box": {
-            "x": 145.0,
-            "y": 309.0,
-            "width": 106.25,
-            "height": 12.0
-          },
+          "x": 145.0,
+          "width": 106.25,
           "type": "text",
           "value": "$.firstName",
           "acroFieldName": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_31[0]",
@@ -492,16 +482,10 @@
           }
         },
         {
-          "kind": "field",
           "id": "dependent_last_name",
           "label": "(2) Last name",
-          "page": 1,
-          "box": {
-            "x": 253.0,
-            "y": 309.0,
-            "width": 106.25,
-            "height": 12.0
-          },
+          "x": 253.0,
+          "width": 106.25,
           "type": "text",
           "value": "$.lastName",
           "acroFieldName": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_32[0]",
@@ -512,16 +496,10 @@
           }
         },
         {
-          "kind": "field",
           "id": "dependent_ssn",
           "label": "(3) SSN",
-          "page": 1,
-          "box": {
-            "x": 361.0,
-            "y": 309.0,
-            "width": 106.25,
-            "height": 12.0
-          },
+          "x": 361.0,
+          "width": 106.25,
           "type": "ssn",
           "value": "$.ssn",
           "acroFieldName": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_33[0]",
@@ -534,16 +512,10 @@
           }
         },
         {
-          "kind": "field",
           "id": "dependent_relationship",
           "label": "(4) Relationship to you",
-          "page": 1,
-          "box": {
-            "x": 469.0,
-            "y": 309.0,
-            "width": 107.0,
-            "height": 12.0
-          },
+          "x": 469.0,
+          "width": 107.0,
           "type": "text",
           "value": "$.relationship",
           "acroFieldName": "topmostSubform[0].Page1[0].Table_Dependents[0].Row1[0].f1_34[0]",
@@ -553,7 +525,8 @@
             "size": 8.0
           }
         }
-      ]
+      ],
+      "overflowStrategy": "error"
     },
     {
       "kind": "field",

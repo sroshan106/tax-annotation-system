@@ -9,9 +9,12 @@ A machine-checkable data structure and reference pipeline for printing values fr
 pip install -r requirements.txt
 
 # 2. Run the CLI to generate a filled PDF
-python app/cli.py render annotations/f1040-2024.json examples/simple-w2.json output.pdf
+python app/cli.py annotations/f1040-2024.json examples/simple-w2.json -o output.pdf
 
-# 3. Or run the Flask demo
+# Or render with debug bounding boxes
+python app/cli.py annotations/f1040-2024.json examples/simple-w2.json -o output.pdf --debug
+
+# 3. Or run the interactive Flask demo
 flask --app app run
 
 # 4. Or run with Gunicorn in production
@@ -41,21 +44,37 @@ docker run -p 8000:8000 tax-annotation-system
 
 ## Architecture Tour
 
-The reference pipeline operates in 4 decoupled modules:
-- **`loader.py`**: Reads and validates the annotation set, checking source PDF sha256.
-- **`resolver.py`**: Evaluates JSONPath subsets and conditions against the dataset.
-- **`formatter.py`**: Converts typed values into formatted display strings (e.g., currency, combs).
-- **`renderer.py`**: Draws the glyphs on a `reportlab` overlay and merges it onto the unmodified IRS PDF using `pypdf`.
+The reference pipeline operates in decoupled modules:
+- **`models.py`**: Canonical Pydantic v2 schemas, per-type format constraints, and load-time page bounds verification.
+- **`geometry.py`**: Coordinate transformations (top-left origin to PDF user-space) and optical cap-height vertical alignment.
+- **`loader.py`**: Deserializes annotation sets and verifies source PDF SHA-256 and dimensions.
+- **`resolver.py`**: Evaluates sandboxed JSONPath queries and conditions against arbitrary datasets.
+- **`formatter.py`**: Formats typed values (Banker's rounding, comb character cell splitting, date patterns, zero suppression).
+- **`renderer.py`**: Generates transparent ReportLab vector overlays with two-pass group overflow handling and merges them onto unmodified IRS PDFs via `pypdf`.
 
 ## Specification
 
 Read the full format specification here: [SPEC.md](./SPEC.md).
 
-## Web Interface & Debug Mode
+## Web Interface & REST API
 
-The Flask app exposes an endpoint that renders PDFs directly from the browser.
-Append `?debug=1` to the render URL to draw every declared bounding box on the PDF.
-*(Screenshot: Imagine a 1040 with red and blue debug boxes highlighting every text and group field)*
+The Flask app provides an interactive split-view frontend (`app/templates/index.html`) featuring form/example selectors, a live JSON editor, embedded PDF preview, and a debug bounding box toggle.
+
+### REST Endpoints
+- **`POST /api/render`**: Accepts `{ form: "f1040", data: {...}, debug: false }` and returns the generated PDF (`application/pdf`).
+- **`POST /api/validate`**: Accepts `{ form: "f1040" }` and returns `{ valid: true, warnings: [], errors: [] }`.
+- **`GET /api/forms/<form_id>/info`**: Returns form metadata, page count, and total declared annotations.
+- **`GET /api/examples/<filename>`**: Returns pre-packaged taxpayer JSON payloads.
+- **`GET /healthz`**: Liveness probe returning `{"status": "healthy"}`.
+- **`GET /favicon.ico`**: Serves application favicon.
+
+## Testing & Verification
+
+Run the test suite using pytest:
+```bash
+pytest
+```
+Tests use a placement visitor (`tests/pdf_probe.py`) to verify text glyph positions and font metrics directly from rendered PDF streams without brittle binary hash comparisons.
 
 ## Decisions and Rejected Alternatives
 

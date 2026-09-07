@@ -10,9 +10,15 @@ from app.formatter import format_value
 from app.resolver import resolve_one, resolve_many, evaluate
 
 
+def _merge(default, override):
+    """exclude_unset, not exclude_defaults: an annotation that explicitly names
+    a key must win even when it names the model's own default value."""
+    return type(default).model_validate(
+        default.model_dump() | override.model_dump(exclude_unset=True))
+
+
 def _style(aset: AnnotationSet, ann: FieldAnnotation) -> Style:
-    merged = aset.defaults.model_dump() | ann.style.model_dump(exclude_defaults=True)
-    return Style.model_validate(merged)
+    return _merge(aset.defaults.style, ann.style)
 
 
 def _font(s: Style) -> str:
@@ -35,6 +41,7 @@ def _fit(text: str, ann: FieldAnnotation, s: Style) -> float:
 def _draw_field(c, aset, ann: FieldAnnotation, data, page_h: float):
     if not evaluate(ann.condition, data):
         return
+    ann = ann.model_copy(update={"format": _merge(aset.defaults.format, ann.format)})
     raw = resolve_one(ann.value, data, required=ann.required, annotation_id=ann.id)
     out = format_value(ann, raw)
     if not out:
@@ -77,6 +84,7 @@ def _draw_debug(c, ann_box, page_h: float, label: str):
     c.restoreState()
 
 
+# Two-pass scan: suppress declared overflow target annotations until row capacity is exceeded.
 def _overflow_targets(aset: AnnotationSet, data: dict) -> tuple[set[str], set[str]]:
     declared: set[str] = set()
     fired: set[str] = set()
@@ -118,6 +126,7 @@ def render(aset: AnnotationSet, data: dict, pdf_path: Path, *, debug: bool = Fal
         writer.add_page(page)
         if i < len(overlay.pages):
             writer.pages[i].merge_page(overlay.pages[i])
+    # Suppress PDF viewer bookmarks/attachments navigation panel on open.
     writer.page_mode = "/UseNone"
     out = io.BytesIO()
     writer.write(out)
@@ -131,12 +140,9 @@ def _draw_group(c, aset, grp: GroupAnnotation, data, page_h: float, debug: bool)
     if len(rows) > grp.maxRows and grp.overflowStrategy == "error":
         raise ValueError(f"{grp.id}: {len(rows)} rows exceed maxRows={grp.maxRows}")
     for n, row in enumerate(rows[:grp.maxRows]):
-        dy = n * grp.rowHeight
         for col in grp.columns:
-            shifted = col.model_copy(update={
-                "box": col.box.model_copy(update={"y": grp.firstRowBox.y + dy}),
-                "id": f"{grp.id}[{n}].{col.id}",
-            })
-            _draw_field(c, aset, shifted, row, page_h)
+            cell = col.as_field(id=f"{grp.id}[{n}].{col.id}", page=grp.page,
+                                box=grp.row_box(col, n))
+            _draw_field(c, aset, cell, row, page_h)
             if debug:
-                _draw_debug(c, shifted.box, page_h, shifted.id)
+                _draw_debug(c, cell.box, page_h, cell.id)

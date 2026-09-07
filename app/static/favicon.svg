@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" rx="7" fill="#2563eb"/>
+  <path d="M8 5.5A1.5 1.5 0 0 1 9.5 4H18l6 6v16.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 8 26.5V5.5z" fill="#ffffff"/>
+  <path d="M18 4v6h6z" fill="#dbeafe"/>
+  <!-- Form lines and debug box overlay -->
+  <rect x="10.5" y="12.5" width="6" height="2" rx="0.75" fill="#2563eb"/>
+  <rect x="17.5" y="11.5" width="4.5" height="4" rx="0.75" fill="none" stroke="#dc2626" stroke-width="1.2"/>
+  <rect x="10.5" y="17.5" width="11.5" height="2" rx="0.75" fill="#94a3b8"/>
+  <rect x="10.5" y="21.5" width="8" height="2" rx="0.75" fill="#cbd5e1"/>
+</svg>

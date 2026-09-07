@@ -8,11 +8,13 @@ class MultipleMatchesError(ValueError): ...
 class UnsupportedPathError(ValueError): ...
 
 
+# Cache compiled ASTs: tax returns repeat identical paths across forms.
 @lru_cache(maxsize=512)
 def _compile(path: str):
     try:
         return _parse(path)
     except Exception as exc:
+        # Filter expressions [?(...)] are excluded to prevent code-execution surface and ensure portability.
         raise UnsupportedPathError(
             f"{path!r} is not in the supported JSONPath subset "
             f"(child, index, [*], .. only; filters are excluded): {exc}") from exc
@@ -50,5 +52,6 @@ def evaluate(cond: Condition | None, data) -> bool:
     if cond.op == "equals":
         return bool(present) and first == cond.value
     if cond.op == "notEquals":
+        # Vacuous truth: absent paths satisfy notEquals.
         return not present or first != cond.value
     raise UnsupportedPathError(f"unknown condition op {cond.op!r}")

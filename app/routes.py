@@ -1,5 +1,5 @@
 from pathlib import Path
-from flask import Blueprint, jsonify, render_template, request, send_file
+from flask import Blueprint, current_app, jsonify, render_template, request, send_file, send_from_directory
 import io
 import json
 
@@ -98,4 +98,13 @@ def api_example(filename: str):
 @bp.get("/healthz")
 def healthz():
     return jsonify(status="healthy"), 200
+
+
+@bp.get("/favicon.ico")
+def favicon():
+    return send_from_directory(
+        Path(current_app.root_path) / "static",
+        "favicon.svg",
+        mimetype="image/svg+xml",
+    )
 

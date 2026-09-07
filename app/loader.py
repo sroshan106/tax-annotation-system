@@ -31,6 +31,7 @@ def verify_source(aset: AnnotationSet, pdf_path: Path, *, strict: bool) -> list[
             problems.append(
                 f"page {p.number} size mismatch: set declares "
                 f"{p.width}x{p.height}, PDF is {float(mb.width)}x{float(mb.height)}")
+    # Soft warnings by default: the IRS silently reissues PDFs at identical URLs.
     if problems and strict:
         raise SourceMismatch("; ".join(problems))
     return problems

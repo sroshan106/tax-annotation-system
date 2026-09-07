@@ -27,7 +27,9 @@ def format_value(ann: FieldAnnotation, raw):
 def _money(v: Decimal, ann: FieldAnnotation) -> str:
     f = ann.format
     places = 0 if f.wholeDollars else f.decimals
+    # Banker's rounding eliminates cumulative rounding bias across multiple schedule lines.
     v = v.quantize(Decimal(1).scaleb(-places), rounding=ROUND_HALF_EVEN)
+    # Check post-rounding value: prevents tiny fractions from producing unwanted 0.00 entries.
     if f.zeroSuppress and v == 0:
         return ""
     sep = "," if f.thousandsSeparator else ""

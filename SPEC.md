@@ -38,7 +38,7 @@ An `AnnotationSet` defines the canonical schema, composed of the following neste
 - `form` (`FormMeta`): Metadata about the form.
 - `source` (`SourceMeta`): PDF source metadata.
 - `pages` (`list[PageMeta]`): Array of page geometries.
-- `defaults` (`Style`, optional): Default styling applied across annotations.
+- `defaults` (`Defaults`, optional): Set-wide fallbacks, `{style, format}`. An annotation overrides a default by naming the key, **even when it names the same value the model would have used anyway**.
 - `annotations` (`list[Annotation]`): A flat list of `FieldAnnotation` and `GroupAnnotation` items.
 
 ### `FormMeta`
@@ -114,12 +114,19 @@ Top-left origin, `y` grows down, units are PDF points.
 - `source` (`str`): JSONPath expression to an array of objects.
 - `rowHeight` (`float`): Vertical distance between rows.
 - `maxRows` (`int`): Maximum number of rows to print.
-- `firstRowBox` (`Box`): Bounding box of the entire first row.
-- `columns` (`list[FieldAnnotation]`): Fields to render per row.
+- `firstRowY` (`float`): Y-coordinate of the top of the first row.
+- `columns` (`list[GroupColumn]`): Cells to render per row.
 - `overflowStrategy` (`Literal["statement", "error"]`, default `"statement"`): Action when row count exceeds `maxRows`.
 - `overflowTarget` (`str | None`): ID of a top-level `FieldAnnotation` to print "See Attached" into (required for `"statement"` strategy).
 - `condition` (`Condition | None`): Optional conditional logic to render the group.
 
+
+### `GroupColumn`
+A column carries every `FieldAnnotation` printing property (`id`, `label`, `type`, `value`, `acroFieldName`, `required`, `format`, `style`, `overflow`, `minSize`, `condition`) except the geometry, which the group owns. It adds:
+- `x` (`float`): X-coordinate of the column's left edge.
+- `width` (`float`): Column width.
+
+A column MUST NOT declare `page` or a `box`: it inherits the group's page, and its vertical placement is derived per row.
 
 ## 5. Referencing Values
 Data is referenced using a strict subset of JSONPath.
@@ -214,10 +221,21 @@ Similar to `comb`, specialized for Zip codes.
 - **Rendered Output**: `["0", "2", "1", "", ""]`
 
 ## 7. Repeating Groups
-- **Row geometry**: Driven by `firstRowBox` and `rowHeight`. Column `box.y` values are cosmetic; the renderer sets `y = firstRowBox.y + n * rowHeight`.
+- **Row geometry**: Driven by `firstRowY` and `rowHeight`. A column declares only its horizontal extent (`x`, `width`); the renderer computes each cell box as `y = firstRowY + n * rowHeight`, `height = rowHeight`. Nothing in a group is declared that the renderer does not read.
 - **Paths**: Column paths resolve relative to the current row item.
 - **Limits**: Governed by `maxRows`.
 - **Overflow strategies**: `"statement"` (prints "see attached" in `overflowTarget`) or `"error"`.
+
+## 7.1 Load-Time Validation
+An annotation set is rejected at load time, not silently mis-rendered, when:
+- an annotation names a `page` not declared in `pages[]`;
+- an `id` is duplicated, including across group columns;
+- a `box` has a negative coordinate or extends past its page's declared `width`/`height`;
+- a group's first or last row (`firstRowY + (maxRows - 1) * rowHeight`) would fall off its page;
+- a `format` key has no effect on the annotation's `type` (e.g. `wholeDollars` on a `date`). `defaults.format` is exempt, since it is shared across types;
+- `overflowStrategy: "statement"` is used without an `overflowTarget`, or the target does not name a top-level field annotation;
+- a `comb` field omits `format.cells`;
+- a non-base-14 `font` is used without a base-14 `fontFallback`.
 
 ## 8. Provenance and Form Revisions
 - `source.sha256` ensures the annotation set matches the underlying PDF.

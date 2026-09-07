@@ -31,11 +31,9 @@ def test_every_box_sits_on_its_page(set_path):
             assert 0 <= a.box.x and a.box.x + a.box.width <= pg.width, a.id
             assert 0 <= a.box.y and a.box.y + a.box.height <= pg.height, a.id
         else:
-            assert 0 <= a.firstRowBox.x and a.firstRowBox.x + a.firstRowBox.width <= pg.width, a.id
-            assert 0 <= a.firstRowBox.y and a.firstRowBox.y + a.firstRowBox.height <= pg.height, a.id
             for c in a.columns:
-                assert 0 <= c.box.x and c.box.x + c.box.width <= pg.width, f"{a.id}.{c.id}"
-                assert 0 <= c.box.y and c.box.y + c.box.height <= pg.height, f"{a.id}.{c.id}"
+                for n in (0, a.maxRows - 1):
+                    assert a.row_box(c, n).fits(pg), f"{a.id}.{c.id} row {n}"
 
 
 def test_the_1040_set_covers_every_declared_field_type():

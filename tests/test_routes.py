@@ -97,3 +97,24 @@ def test_healthz_endpoint(client):
     assert r.status_code == 200
     assert r.get_json() == {"status": "healthy"}
 
+
+def test_index_has_favicon_link(client):
+    r = client.get("/")
+    assert r.status_code == 200
+    assert b'rel="icon"' in r.data
+    assert b"favicon.svg" in r.data
+
+
+def test_favicon_ico_endpoint(client):
+    r = client.get("/favicon.ico")
+    assert r.status_code == 200
+    assert b"<svg" in r.data
+    assert r.mimetype == "image/svg+xml"
+
+
+def test_static_favicon_endpoint(client):
+    r = client.get("/static/favicon.svg")
+    assert r.status_code == 200
+    assert b"<svg" in r.data
+    assert r.mimetype == "image/svg+xml"
+

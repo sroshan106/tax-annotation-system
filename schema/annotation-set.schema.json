@@ -65,14 +65,21 @@
       "title": "Condition",
       "type": "object"
     },
+    "Defaults": {
+      "description": "Set-wide fallbacks. An annotation overrides a default by naming the key,\neven when it names the same value the model would have used anyway.",
+      "properties": {
+        "style": {
+          "$ref": "#/$defs/Style"
+        },
+        "format": {
+          "$ref": "#/$defs/Format"
+        }
+      },
+      "title": "Defaults",
+      "type": "object"
+    },
     "FieldAnnotation": {
       "properties": {
-        "kind": {
-          "const": "field",
-          "default": "field",
-          "title": "Kind",
-          "type": "string"
-        },
         "id": {
           "title": "Id",
           "type": "string"
@@ -80,13 +87,6 @@
         "label": {
           "title": "Label",
           "type": "string"
-        },
-        "page": {
-          "title": "Page",
-          "type": "integer"
-        },
-        "box": {
-          "$ref": "#/$defs/Box"
         },
         "type": {
           "enum": [
@@ -157,15 +157,28 @@
             }
           ],
           "default": null
+        },
+        "kind": {
+          "const": "field",
+          "default": "field",
+          "title": "Kind",
+          "type": "string"
+        },
+        "page": {
+          "title": "Page",
+          "type": "integer"
+        },
+        "box": {
+          "$ref": "#/$defs/Box"
         }
       },
       "required": [
         "id",
         "label",
-        "page",
-        "box",
         "type",
-        "value"
+        "value",
+        "page",
+        "box"
       ],
       "title": "FieldAnnotation",
       "type": "object"
@@ -296,12 +309,13 @@
           "title": "Maxrows",
           "type": "integer"
         },
-        "firstRowBox": {
-          "$ref": "#/$defs/Box"
+        "firstRowY": {
+          "title": "Firstrowy",
+          "type": "number"
         },
         "columns": {
           "items": {
-            "$ref": "#/$defs/FieldAnnotation"
+            "$ref": "#/$defs/GroupColumn"
           },
           "title": "Columns",
           "type": "array"
@@ -347,10 +361,111 @@
         "source",
         "rowHeight",
         "maxRows",
-        "firstRowBox",
+        "firstRowY",
         "columns"
       ],
       "title": "GroupAnnotation",
+      "type": "object"
+    },
+    "GroupColumn": {
+      "description": "A column only declares its horizontal extent: the vertical position of\nevery cell comes from the group's firstRowY and rowHeight.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "text",
+            "currency",
+            "integer",
+            "decimal",
+            "date",
+            "ssn",
+            "ein",
+            "phone",
+            "zip",
+            "checkbox",
+            "comb"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        },
+        "acroFieldName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Acrofieldname"
+        },
+        "required": {
+          "default": false,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "format": {
+          "$ref": "#/$defs/Format"
+        },
+        "style": {
+          "$ref": "#/$defs/Style"
+        },
+        "overflow": {
+          "default": "shrink",
+          "enum": [
+            "shrink",
+            "clip",
+            "error"
+          ],
+          "title": "Overflow",
+          "type": "string"
+        },
+        "minSize": {
+          "default": 5.0,
+          "title": "Minsize",
+          "type": "number"
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Condition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "width": {
+          "title": "Width",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "type",
+        "value",
+        "x",
+        "width"
+      ],
+      "title": "GroupColumn",
       "type": "object"
     },
     "PageMeta": {
@@ -479,7 +594,7 @@
       "type": "array"
     },
     "defaults": {
-      "$ref": "#/$defs/Style"
+      "$ref": "#/$defs/Defaults"
     },
     "annotations": {
       "items": {

@@ -1,9 +1,11 @@
 from app.models import Box, Style
 
+# Pinned to Helvetica's cap-height ratio (0.72) for optical vertical alignment.
 CAP_HEIGHT_RATIO = 0.72
 
 
 def to_pdf_rect(box: Box, page_height: float) -> tuple[float, float, float, float]:
+    # Invert y: PDF user-space origin is bottom-left (y grows up); spec origin is top-left.
     return (box.x, page_height - box.y - box.height, box.width, box.height)
 
 

@@ -31,10 +31,9 @@ def test_kind_discriminates_field_from_group():
         "kind": "group", "id": "sch_b_payers", "label": "Payers",
         "page": 1, "source": "$.income.interest[*]",
         "rowHeight": 16, "maxRows": 14,
-        "firstRowBox": {"x": 40, "y": 200, "width": 400, "height": 14},
+        "firstRowY": 200.0,
         "overflowStrategy": "statement", "overflowTarget": "first_name",
-        "columns": [{"kind": "field", "id": "payer", "label": "Payer",
-                     "page": 1, "box": {"x": 0, "y": 0, "width": 300, "height": 14},
+        "columns": [{"id": "payer", "label": "Payer", "x": 40, "width": 300,
                      "type": "text", "value": "$.name"}],
     }]}
     s = AnnotationSet.model_validate(doc)
@@ -45,10 +44,9 @@ def test_overflow_target_must_be_top_level_field():
         "kind": "group", "id": "sch_b_payers", "label": "Payers",
         "page": 1, "source": "$.income.interest[*]",
         "rowHeight": 16, "maxRows": 14,
-        "firstRowBox": {"x": 40, "y": 200, "width": 400, "height": 14},
+        "firstRowY": 200.0,
         "overflowStrategy": "statement", "overflowTarget": "does_not_exist",
-        "columns": [{"kind": "field", "id": "payer", "label": "Payer",
-                     "page": 1, "box": {"x": 0, "y": 0, "width": 300, "height": 14},
+        "columns": [{"id": "payer", "label": "Payer", "x": 40, "width": 300,
                      "type": "text", "value": "$.name"}],
     }]}
     with pytest.raises(ValidationError, match="does not name a top-level field annotation"):

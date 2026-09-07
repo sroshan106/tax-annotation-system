@@ -7,14 +7,12 @@ from tests.test_models import MINIMAL
 def group_doc(max_rows=2, strategy="statement", target="sch_b_note"):
     ann = {"kind": "group", "id": "payers", "label": "Payers", "page": 1,
            "source": "$.income.interest[*]", "rowHeight": 16, "maxRows": max_rows,
-           "firstRowBox": {"x": 40, "y": 300, "width": 400, "height": 14},
+           "firstRowY": 300.0,
            "overflowStrategy": strategy,
            "columns": [
-               {"kind": "field", "id": "payer", "label": "Payer", "page": 1,
-                "box": {"x": 40, "y": 300, "width": 280, "height": 14},
+               {"id": "payer", "label": "Payer", "x": 40, "width": 280,
                 "type": "text", "value": "$.name"},
-               {"kind": "field", "id": "amount", "label": "Amount", "page": 1,
-                "box": {"x": 330, "y": 300, "width": 110, "height": 14},
+               {"id": "amount", "label": "Amount", "x": 330, "width": 110,
                 "type": "currency", "value": "$.amount",
                 "style": {"align": "right"}}]}
     if strategy == "statement":
