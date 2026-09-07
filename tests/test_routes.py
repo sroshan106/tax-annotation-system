@@ -80,8 +80,14 @@ def test_form_info_unknown_form_is_404(client):
     assert r.status_code == 404
 
 
-def test_example_endpoint_returns_json(client):
-    r = client.get("/api/examples/simple-w2.json")
+@pytest.mark.parametrize("filename", [
+    "simple-w2.json",
+    "joint-dependents.json",
+    "schedule-b-normal.json",
+    "schedule-b-overflow.json",
+])
+def test_example_endpoint_returns_json(client, filename):
+    r = client.get(f"/api/examples/{filename}")
     assert r.status_code == 200
     data = r.get_json()
     assert "taxpayer" in data

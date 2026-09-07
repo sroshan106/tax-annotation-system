@@ -26,9 +26,11 @@
     { "firstName": "Theodore", "lastName": "Vandermeulen-Ashworth-Okonkwo",
       "ssn": "612-08-3392", "relationship": "Son" },
     { "firstName": "Margarethe", "lastName": "Ashworth",
-      "ssn": "544-19-7725", "relationship": "Mother" }
+      "ssn": "544-19-7725", "relationship": "Mother" },
+    { "firstName": "Eleanor", "lastName": "Vandermeulen-Ashworth-Okonkwo",
+      "ssn": "612-08-3393", "relationship": "Daughter" }
   ],
-  "dependentsContinuedOnStatement": false,
+  "dependentsContinuedOnStatement": true,
   "income": {
     "wages": { "dollars": 214905, "cents": "00" },
     "totalWages": 214905,

@@ -1,11 +1,8 @@
-Technical Test
 Instead Engineer
 
 Overview
 Instead is revolutionizing the tax industry as a cutting-edge platform that facilitates collaboration between taxpayers and tax professionals to maximize tax savings. This technical assessment evaluates your ability to design a robust annotation system for U.S. tax forms—a core component of our platform's functionality.
 
-
-Technical test
 Define a new data structure for how to annotate fields/boxes on a U.S. tax form.
 
 Deliver your structure as JSON, XML, or any other format of your choice, including classes in any popular programming language.
