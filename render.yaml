@@ -8,6 +8,12 @@ services:
     startCommand: "gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120"
     healthCheckPath: /healthz
     autoDeploy: true
+    # Build filter: prevent sensitive local configs and test caches from triggering deploys
+    buildFilter:
+      ignoredPaths:
+        - .env*
+        - .pytest_cache/**
+        - tests/**
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.3
