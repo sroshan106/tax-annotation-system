@@ -54,7 +54,10 @@ The reference pipeline operates in decoupled modules:
 
 ## Specification
 
-Read the full format specification here: [SPEC.md](./SPEC.md).
+- **Full Format Specification**: [SPEC.md](./SPEC.md) (RFC 2119 conformance, coordinate system, JSONPath resolution, formatting, repeating groups, overflow strategies)
+- **Canonical Pydantic v2 Models**: [`app/models.py`](./app/models.py)
+- **Exported JSON Schema**: [`schema/annotation-set.schema.json`](./schema/annotation-set.schema.json)
+
 
 ## Web Interface & REST API
 
